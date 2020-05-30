@@ -1,14 +1,72 @@
 # time_range_picker
 
-A new Flutter package project.
+A time range picker for flutter.
 
 ## Getting Started
 
-This project is a starting point for a Dart
-[package](https://flutter.dev/developing-packages/),
-a library module containing code that can be shared easily across
-multiple Flutter or Dart projects.
+- [Installation](#installation)
+- [Basic Usage](#basic-usage)
+- [Use Cases](#use-cases)
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+
+
+### Installation
+
+Add
+
+```bash
+
+time_range_picker : any
+
+```
+
+to your pubspec.yaml, and run
+
+```bash
+flutter packages get
+```
+
+in your project's root directory.
+
+### Basic Usage
+
+
+```dart
+import 'package:flutter/material.dart';
+
+import 'package:time_range_picker/time_range_picker.dart';
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: MyHomePage(),
+    );
+  }
+}
+
+class MyHomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        backgroundColor: Colors.blueGrey,
+        body: Center(
+          child: RaisedButton(
+            onPressed: () async {
+              TimeRange result = await showTimeRangePicker(
+                context: context,
+              );
+              print("result " + result.toString());
+            },
+            child: Text("Pure"),
+          ),
+        ));
+  }
+}
+```
+
