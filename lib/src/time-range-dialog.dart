@@ -19,7 +19,7 @@ showTimeRangePicker({
   /// the color for the disabled section
   Color disabledColor,
 
-  /// Style of the circle
+  /// Style of the arc (filled or stroke)
   PaintingStyle paintingStyle,
 
   /// if start time changed
@@ -40,17 +40,17 @@ showTimeRangePicker({
   /// use 24 hours or am / pm
   bool use24HourFormat = true,
 
-  /// the radius of the ring
+  /// the padding of the ring
   double padding,
 
   /// the thickness of the ring
   double strokeWidth = 12,
 
-  /// the radius of the handler to drag the arc
-  double handlerRadius = 12,
-
   /// the color of the active arc from start time to end time
   Color strokeColor,
+
+  /// the radius of the handler to drag the arc
+  double handlerRadius = 12,
 
   /// the color of a  handler
   Color handlerColor,
@@ -90,7 +90,6 @@ showTimeRangePicker({
 
   /// rotate labels
   bool rotateLabels,
-
 
   /// flip labels if the angle woulb be upside down (only if rotate labels is active)
   bool autoAdjustLabels,
@@ -142,7 +141,7 @@ showTimeRangePicker({
     labels: labels,
     labelOffset: labelOffset,
     rotateLabels: rotateLabels,
-    autoAdjustLabels:autoAdjustLabels,
+    autoAdjustLabels: autoAdjustLabels,
     labelStyle: labelStyle,
     timeTextStyle: timeTextStyle,
     activeTimeTextStyle: activeTimeTextStyle,
@@ -475,40 +474,39 @@ class _TimeRangePickerState extends State<_TimeRangePicker>
                         child: CustomPaint(
                           key: _circleKey,
                           painter: ClockPainter(
-                              activeTime: _activeTime,
-                              startAngle: _startAngle,
-                              endAngle: _endAngle,
-                              disabledStartAngle: _disabledStartAngle,
-                              disabledEndAngle: _disabledEndAngle,
-                              radius: _radius,
-                              strokeWidth: widget.strokeWidth ?? 12,
-                              handlerRadius: widget.handlerRadius ?? 12,
-                              strokeColor:
-                                  widget.strokeColor ?? themeData.primaryColor,
-                              handlerColor:
-                                  widget.handlerColor ?? themeData.primaryColor,
-                              selectedColor: widget.selectedColor ??
-                                  themeData.primaryColorLight,
-                              backgroundColor:
-                                  widget.backgroundColor ?? Colors.grey[200],
-                              disabledColor: widget.disabledColor ??
-                                  Colors.red.withOpacity(0.5),
-                              paintingStyle:
-                                  widget.paintingStyle ?? PaintingStyle.stroke,
-                              ticks: widget.ticks,
-                              ticksColor: widget.ticksColor ?? Colors.white,
-                              ticksLength: widget.ticksLength ??
-                                  widget.strokeWidth ??
-                                  12,
-                              ticksWidth: widget.ticksWidth ?? 1,
-                              ticksOffset: widget.ticksOffset ?? 0,
-                              labels: widget.labels,
-                              labelStyle: widget.labelStyle ??
-                                  themeData.textTheme.bodyText1,
-                              labelOffset: widget.labelOffset ?? 20,
-                              rotateLabels: widget.rotateLabels ?? true,
-                              autoAdjustLabels: widget.autoAdjustLabels ?? true,
-                              ),
+                            activeTime: _activeTime,
+                            startAngle: _startAngle,
+                            endAngle: _endAngle,
+                            disabledStartAngle: _disabledStartAngle,
+                            disabledEndAngle: _disabledEndAngle,
+                            radius: _radius,
+                            strokeWidth: widget.strokeWidth ?? 12,
+                            handlerRadius: widget.handlerRadius ?? 12,
+                            strokeColor:
+                                widget.strokeColor ?? themeData.primaryColor,
+                            handlerColor:
+                                widget.handlerColor ?? themeData.primaryColor,
+                            selectedColor: widget.selectedColor ??
+                                themeData.primaryColorLight,
+                            backgroundColor:
+                                widget.backgroundColor ?? Colors.grey[200],
+                            disabledColor: widget.disabledColor ??
+                                Colors.red.withOpacity(0.5),
+                            paintingStyle:
+                                widget.paintingStyle ?? PaintingStyle.stroke,
+                            ticks: widget.ticks,
+                            ticksColor: widget.ticksColor ?? Colors.white,
+                            ticksLength:
+                                widget.ticksLength ?? widget.strokeWidth ?? 12,
+                            ticksWidth: widget.ticksWidth ?? 1,
+                            ticksOffset: widget.ticksOffset ?? 0,
+                            labels: widget.labels,
+                            labelStyle: widget.labelStyle ??
+                                themeData.textTheme.bodyText1,
+                            labelOffset: widget.labelOffset ?? 20,
+                            rotateLabels: widget.rotateLabels ?? true,
+                            autoAdjustLabels: widget.autoAdjustLabels ?? true,
+                          ),
                           size: Size.fromRadius(_radius),
                         ),
                       ),
