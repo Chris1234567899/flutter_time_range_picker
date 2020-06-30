@@ -6,3 +6,7 @@
 
 * Updated docs
 
+## [1.0.2] - TODO: Add release date.
+
+* Fixed a bug when start-time was beyond 21pm
+

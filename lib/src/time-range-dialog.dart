@@ -264,7 +264,11 @@ class _TimeRangePickerState extends State<_TimeRangePicker>
   @override
   void initState() {
     var startTime = widget.start ?? TimeOfDay.now();
-    var endTime = widget.end ?? startTime.replacing(hour: startTime.hour + 3);
+    var endTime = widget.end ??
+        startTime.replacing(
+            hour: startTime.hour < 21
+                ? startTime.hour + 3
+                : startTime.hour - 21);
 
     _startTime = _roundMinutes(startTime.hour * 60 + startTime.minute * 1.0);
     _startAngle = timeToAngle(_startTime);

@@ -73,6 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: () {
               showTimeRangePicker(
                 context: context,
+                start: TimeOfDay(hour: 22,minute: 9),
                 onStartChange: (start) {
                   print("start time " + start.toString());
                 },
