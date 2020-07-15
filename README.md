@@ -1,10 +1,10 @@
-# time_range_picker
+# Time Range Picker
 
 A time range picker for flutter.
 
 ## Getting Started
 
-- [time_range_picker](#time_range_picker)
+- [Time Range Picker](#time-range-picker)
   - [Getting Started](#getting-started)
     - [Installation](#installation)
     - [Basic Usage](#basic-usage)
