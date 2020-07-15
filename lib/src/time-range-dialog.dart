@@ -247,7 +247,7 @@ class _TimeRangePicker extends StatefulWidget {
 }
 
 class _TimeRangePickerState extends State<_TimeRangePicker>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   ActiveTime _activeTime;
   double _startAngle = 0;
   double _endAngle = 0;
@@ -263,12 +263,12 @@ class _TimeRangePickerState extends State<_TimeRangePicker>
   double _radius = 50;
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     var startTime = widget.start ?? TimeOfDay.now();
     var endTime = widget.end ??
         startTime.replacing(
-            hour: startTime.hour < 21
-                ? startTime.hour + 3
-                : startTime.hour - 21);
+            hour:
+                startTime.hour < 21 ? startTime.hour + 3 : startTime.hour - 21);
 
     _startTime = _roundMinutes(startTime.hour * 60 + startTime.minute * 1.0);
     _startAngle = timeToAngle(_startTime);
@@ -284,17 +284,26 @@ class _TimeRangePickerState extends State<_TimeRangePicker>
     super.initState();
   }
 
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeMetrics() {
+    super.didChangeMetrics();
+    WidgetsBinding.instance.addPostFrameCallback((_) => setRadius());
+  }
+
   setRadius() {
     RenderBox wrapper = _wrapperKey?.currentContext?.findRenderObject();
     if (wrapper != null) {
       setState(() {
-        _radius = wrapper.size.width / 2 - (widget.padding ?? 26);
+        _radius = min(wrapper.size.width, wrapper.size.height) / 2 -
+            (widget.padding ?? 26);
       });
     }
-  }
-
-  dispose() {
-    super.dispose();
   }
 
   TimeOfDay _angleToTime(double angle) {
@@ -454,88 +463,122 @@ class _TimeRangePickerState extends State<_TimeRangePicker>
 
     return Dialog(
       elevation: 12,
-      child: Column(
-        key: _wrapperKey,
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          if (!widget.hideTimes) header(),
-          Stack(
-              //fit: StackFit.loose,
-              alignment: Alignment.center,
-              children: [
-                if (widget.backgroundWidget != null) widget.backgroundWidget,
-                GestureDetector(
-                  onPanStart: _panStart,
-                  onPanUpdate: _panUpdate,
-                  onPanEnd: _panEnd,
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: Container(
-                      color: Colors.white.withOpacity(0),
-                      child: Center(
-                        child: CustomPaint(
-                          key: _circleKey,
-                          painter: ClockPainter(
-                            activeTime: _activeTime,
-                            startAngle: _startAngle,
-                            endAngle: _endAngle,
-                            disabledStartAngle: _disabledStartAngle,
-                            disabledEndAngle: _disabledEndAngle,
-                            radius: _radius,
-                            strokeWidth: widget.strokeWidth ?? 12,
-                            handlerRadius: widget.handlerRadius ?? 12,
-                            strokeColor:
-                                widget.strokeColor ?? themeData.primaryColor,
-                            handlerColor:
-                                widget.handlerColor ?? themeData.primaryColor,
-                            selectedColor: widget.selectedColor ??
-                                themeData.primaryColorLight,
-                            backgroundColor:
-                                widget.backgroundColor ?? Colors.grey[200],
-                            disabledColor: widget.disabledColor ??
-                                Colors.red.withOpacity(0.5),
-                            paintingStyle:
-                                widget.paintingStyle ?? PaintingStyle.stroke,
-                            ticks: widget.ticks,
-                            ticksColor: widget.ticksColor ?? Colors.white,
-                            ticksLength:
-                                widget.ticksLength ?? widget.strokeWidth ?? 12,
-                            ticksWidth: widget.ticksWidth ?? 1,
-                            ticksOffset: widget.ticksOffset ?? 0,
-                            labels: widget.labels,
-                            labelStyle: widget.labelStyle ??
-                                themeData.textTheme.bodyText1,
-                            labelOffset: widget.labelOffset ?? 20,
-                            rotateLabels: widget.rotateLabels ?? true,
-                            autoAdjustLabels: widget.autoAdjustLabels ?? true,
+      child: OrientationBuilder(
+        builder: (_, orientation) => orientation == Orientation.portrait
+            ? Column(
+                key: _wrapperKey,
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  if (!widget.hideTimes) _buildHeader(false),
+                  Stack(
+                      //fit: StackFit.loose,
+                      alignment: Alignment.center,
+                      children: [
+                        if (widget.backgroundWidget != null)
+                          widget.backgroundWidget,
+                        _buildTimeRange(
+                            localizations: localizations, themeData: themeData)
+                      ]),
+                  _buildButtonBar(localizations: localizations)
+                ],
+              )
+            : Row(
+                children: [
+                  if (!widget.hideTimes) _buildHeader(true),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            key: _wrapperKey,
+                            width: double.infinity,
+                            child:
+                                Stack(alignment: Alignment.center, children: [
+                              if (widget.backgroundWidget != null)
+                                widget.backgroundWidget,
+                              _buildTimeRange(
+                                  localizations: localizations,
+                                  themeData: themeData)
+                            ]),
                           ),
-                          size: Size.fromRadius(_radius),
                         ),
-                      ),
+                        _buildButtonBar(localizations: localizations)
+                      ],
                     ),
                   ),
-                ),
-              ]),
-          ButtonBar(
-            children: <Widget>[
-              FlatButton(
-                child: Text(localizations.cancelButtonLabel),
-                onPressed: _cancel,
+                ],
               ),
-              FlatButton(
-                child: Text(localizations.okButtonLabel),
-                onPressed: _submit,
-              ),
-            ],
-          )
-        ],
       ),
     );
   }
 
-  Widget header() {
+  Widget _buildButtonBar({@required MaterialLocalizations localizations}) =>
+      ButtonBar(
+        children: <Widget>[
+          FlatButton(
+            child: Text(localizations.cancelButtonLabel),
+            onPressed: _cancel,
+          ),
+          FlatButton(
+            child: Text(localizations.okButtonLabel),
+            onPressed: _submit,
+          ),
+        ],
+      );
+
+  Widget _buildTimeRange(
+          {@required MaterialLocalizations localizations,
+          @required ThemeData themeData}) =>
+      GestureDetector(
+        onPanStart: _panStart,
+        onPanUpdate: _panUpdate,
+        onPanEnd: _panEnd,
+        child: AspectRatio(
+          aspectRatio: 1,
+          child: Container(
+            color: Colors.white.withOpacity(0),
+            child: Center(
+              child: CustomPaint(
+                key: _circleKey,
+                painter: ClockPainter(
+                  activeTime: _activeTime,
+                  startAngle: _startAngle,
+                  endAngle: _endAngle,
+                  disabledStartAngle: _disabledStartAngle,
+                  disabledEndAngle: _disabledEndAngle,
+                  radius: _radius,
+                  strokeWidth: widget.strokeWidth ?? 12,
+                  handlerRadius: widget.handlerRadius ?? 12,
+                  strokeColor: widget.strokeColor ?? themeData.primaryColor,
+                  handlerColor: widget.handlerColor ?? themeData.primaryColor,
+                  selectedColor:
+                      widget.selectedColor ?? themeData.primaryColorLight,
+                  backgroundColor: widget.backgroundColor ?? Colors.grey[200],
+                  disabledColor:
+                      widget.disabledColor ?? Colors.red.withOpacity(0.5),
+                  paintingStyle: widget.paintingStyle ?? PaintingStyle.stroke,
+                  ticks: widget.ticks,
+                  ticksColor: widget.ticksColor ?? Colors.white,
+                  ticksLength: widget.ticksLength ?? widget.strokeWidth ?? 12,
+                  ticksWidth: widget.ticksWidth ?? 1,
+                  ticksOffset: widget.ticksOffset ?? 0,
+                  labels: widget.labels,
+                  labelStyle:
+                      widget.labelStyle ?? themeData.textTheme.bodyText1,
+                  labelOffset: widget.labelOffset ?? 20,
+                  rotateLabels: widget.rotateLabels ?? true,
+                  autoAdjustLabels: widget.autoAdjustLabels ?? true,
+                ),
+                size: Size.fromRadius(_radius),
+              ),
+            ),
+          ),
+        ),
+      );
+
+  Widget _buildHeader(bool landscape) {
     final ThemeData themeData = Theme.of(context);
 
     Color backgroundColor;
@@ -564,7 +607,8 @@ class _TimeRangePickerState extends State<_TimeRangePicker>
     return Container(
       color: backgroundColor,
       padding: EdgeInsets.all(24),
-      child: Row(
+      child: Flex(
+        direction: landscape ? Axis.vertical : Axis.horizontal,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Column(
