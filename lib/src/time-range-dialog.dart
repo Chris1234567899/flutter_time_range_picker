@@ -113,7 +113,7 @@ showTimeRangePicker({
   assert(useRootNavigator != null);
   assert(debugCheckHasMaterialLocalizations(context));
 
-  final Widget dialog = _TimeRangePicker(
+  final Widget dialog = TimeRangePicker(
     start: start,
     end: end,
     disabledTime: disabledTime,
@@ -158,7 +158,7 @@ showTimeRangePicker({
   );
 }
 
-class _TimeRangePicker extends StatefulWidget {
+class TimeRangePicker extends StatefulWidget {
   final TimeOfDay start;
   final TimeOfDay end;
 
@@ -206,7 +206,7 @@ class _TimeRangePicker extends StatefulWidget {
 
   final bool hideTimes;
 
-  _TimeRangePicker({
+  TimeRangePicker({
     Key key,
     this.start,
     this.end,
@@ -246,7 +246,7 @@ class _TimeRangePicker extends StatefulWidget {
   _TimeRangePickerState createState() => _TimeRangePickerState();
 }
 
-class _TimeRangePickerState extends State<_TimeRangePicker>
+class _TimeRangePickerState extends State<TimeRangePicker>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   ActiveTime _activeTime;
   double _startAngle = 0;
