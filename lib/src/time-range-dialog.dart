@@ -105,6 +105,9 @@ showTimeRangePicker({
 
   /// hide the time texts
   bool hideTimes = false,
+
+  /// hide the button bar
+  bool hideButtons = false,
   TransitionBuilder builder,
   bool useRootNavigator = true,
   RouteSettings routeSettings,
@@ -207,6 +210,7 @@ class TimeRangePicker extends StatefulWidget {
   final TextStyle activeTimeTextStyle;
 
   final bool hideTimes;
+  final bool hideButtons;
 
   TimeRangePicker({
     Key key,
@@ -242,7 +246,9 @@ class TimeRangePicker extends StatefulWidget {
     this.timeTextStyle,
     this.activeTimeTextStyle,
     hideTimes,
+    hideButtons,
   })  : hideTimes = hideTimes == null ? false : hideTimes,
+        hideButtons = hideButtons == null ? false : hideButtons,
         super(key: key);
 
   @override
@@ -483,7 +489,8 @@ class _TimeRangePickerState extends State<TimeRangePicker>
                       _buildTimeRange(
                           localizations: localizations, themeData: themeData)
                     ]),
-                _buildButtonBar(localizations: localizations)
+                if (!widget.hideButtons)
+                  _buildButtonBar(localizations: localizations)
               ],
             )
           : Row(
@@ -505,7 +512,8 @@ class _TimeRangePickerState extends State<TimeRangePicker>
                           ]),
                         ),
                       ),
-                      _buildButtonBar(localizations: localizations)
+                      if (!widget.hideButtons)
+                        _buildButtonBar(localizations: localizations)
                     ],
                   ),
                 ),
