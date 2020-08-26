@@ -113,40 +113,42 @@ showTimeRangePicker({
   assert(useRootNavigator != null);
   assert(debugCheckHasMaterialLocalizations(context));
 
-  final Widget dialog = TimeRangePicker(
-    start: start,
-    end: end,
-    disabledTime: disabledTime,
-    paintingStyle: paintingStyle,
-    onStartChange: onStartChange,
-    onEndChange: onEndChange,
-    fromText: fromText,
-    toText: toText,
-    interval: interval,
-    padding: padding,
-    strokeWidth: strokeWidth,
-    handlerRadius: handlerRadius,
-    strokeColor: strokeColor,
-    handlerColor: handlerColor,
-    selectedColor: selectedColor,
-    backgroundColor: backgroundColor,
-    disabledColor: disabledColor,
-    backgroundWidget: backgroundWidget,
-    ticks: ticks,
-    ticksLength: ticksLength,
-    ticksWidth: ticksWidth,
-    ticksOffset: ticksOffset,
-    ticksColor: ticksColor,
-    snap: snap,
-    labels: labels,
-    labelOffset: labelOffset,
-    rotateLabels: rotateLabels,
-    autoAdjustLabels: autoAdjustLabels,
-    labelStyle: labelStyle,
-    timeTextStyle: timeTextStyle,
-    activeTimeTextStyle: activeTimeTextStyle,
-    hideTimes: hideTimes,
-  );
+  final Widget dialog = Dialog(
+      elevation: 12,
+      child: TimeRangePicker(
+        start: start,
+        end: end,
+        disabledTime: disabledTime,
+        paintingStyle: paintingStyle,
+        onStartChange: onStartChange,
+        onEndChange: onEndChange,
+        fromText: fromText,
+        toText: toText,
+        interval: interval,
+        padding: padding,
+        strokeWidth: strokeWidth,
+        handlerRadius: handlerRadius,
+        strokeColor: strokeColor,
+        handlerColor: handlerColor,
+        selectedColor: selectedColor,
+        backgroundColor: backgroundColor,
+        disabledColor: disabledColor,
+        backgroundWidget: backgroundWidget,
+        ticks: ticks,
+        ticksLength: ticksLength,
+        ticksWidth: ticksWidth,
+        ticksOffset: ticksOffset,
+        ticksColor: ticksColor,
+        snap: snap,
+        labels: labels,
+        labelOffset: labelOffset,
+        rotateLabels: rotateLabels,
+        autoAdjustLabels: autoAdjustLabels,
+        labelStyle: labelStyle,
+        timeTextStyle: timeTextStyle,
+        activeTimeTextStyle: activeTimeTextStyle,
+        hideTimes: hideTimes,
+      ));
 
   return await showDialog<TimeRange>(
     context: context,
@@ -239,8 +241,9 @@ class TimeRangePicker extends StatefulWidget {
     this.labelStyle,
     this.timeTextStyle,
     this.activeTimeTextStyle,
-    this.hideTimes,
-  }) : super(key: key);
+    hideTimes,
+  })  : hideTimes = hideTimes == null ? false : hideTimes,
+        super(key: key);
 
   @override
   _TimeRangePickerState createState() => _TimeRangePickerState();
@@ -261,6 +264,7 @@ class _TimeRangePickerState extends State<TimeRangePicker>
   TimeOfDay _startTime;
   TimeOfDay _endTime;
   double _radius = 50;
+
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
@@ -461,56 +465,52 @@ class _TimeRangePickerState extends State<TimeRangePicker>
         MaterialLocalizations.of(context);
     final ThemeData themeData = Theme.of(context);
 
-    return Dialog(
-      elevation: 12,
-      child: OrientationBuilder(
-        builder: (_, orientation) => orientation == Orientation.portrait
-            ? Column(
-                key: _wrapperKey,
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  if (!widget.hideTimes) _buildHeader(false),
-                  Stack(
-                      //fit: StackFit.loose,
-                      alignment: Alignment.center,
-                      children: [
-                        if (widget.backgroundWidget != null)
-                          widget.backgroundWidget,
-                        _buildTimeRange(
-                            localizations: localizations, themeData: themeData)
-                      ]),
-                  _buildButtonBar(localizations: localizations)
-                ],
-              )
-            : Row(
-                children: [
-                  if (!widget.hideTimes) _buildHeader(true),
-                  Expanded(
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            key: _wrapperKey,
-                            width: double.infinity,
-                            child:
-                                Stack(alignment: Alignment.center, children: [
-                              if (widget.backgroundWidget != null)
-                                widget.backgroundWidget,
-                              _buildTimeRange(
-                                  localizations: localizations,
-                                  themeData: themeData)
-                            ]),
-                          ),
+    return OrientationBuilder(
+      builder: (_, orientation) => orientation == Orientation.portrait
+          ? Column(
+              key: _wrapperKey,
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                if (!widget.hideTimes) _buildHeader(false),
+                Stack(
+                    //fit: StackFit.loose,
+                    alignment: Alignment.center,
+                    children: [
+                      if (widget.backgroundWidget != null)
+                        widget.backgroundWidget,
+                      _buildTimeRange(
+                          localizations: localizations, themeData: themeData)
+                    ]),
+                _buildButtonBar(localizations: localizations)
+              ],
+            )
+          : Row(
+              children: [
+                if (!widget.hideTimes) _buildHeader(true),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          key: _wrapperKey,
+                          width: double.infinity,
+                          child: Stack(alignment: Alignment.center, children: [
+                            if (widget.backgroundWidget != null)
+                              widget.backgroundWidget,
+                            _buildTimeRange(
+                                localizations: localizations,
+                                themeData: themeData)
+                          ]),
                         ),
-                        _buildButtonBar(localizations: localizations)
-                      ],
-                    ),
+                      ),
+                      _buildButtonBar(localizations: localizations)
+                    ],
                   ),
-                ],
-              ),
-      ),
+                ),
+              ],
+            ),
     );
   }
 
