@@ -479,23 +479,23 @@ class _TimeRangePickerState extends State<TimeRangePicker>
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                if (!widget.hideTimes) _buildHeader(false),
+                if (!widget.hideTimes) buildHeader(false),
                 Stack(
                     //fit: StackFit.loose,
                     alignment: Alignment.center,
                     children: [
                       if (widget.backgroundWidget != null)
                         widget.backgroundWidget,
-                      _buildTimeRange(
+                      buildTimeRange(
                           localizations: localizations, themeData: themeData)
                     ]),
                 if (!widget.hideButtons)
-                  _buildButtonBar(localizations: localizations)
+                  buildButtonBar(localizations: localizations)
               ],
             )
           : Row(
               children: [
-                if (!widget.hideTimes) _buildHeader(true),
+                if (!widget.hideTimes) buildHeader(true),
                 Expanded(
                   child: Column(
                     children: [
@@ -506,14 +506,14 @@ class _TimeRangePickerState extends State<TimeRangePicker>
                           child: Stack(alignment: Alignment.center, children: [
                             if (widget.backgroundWidget != null)
                               widget.backgroundWidget,
-                            _buildTimeRange(
+                            buildTimeRange(
                                 localizations: localizations,
                                 themeData: themeData)
                           ]),
                         ),
                       ),
                       if (!widget.hideButtons)
-                        _buildButtonBar(localizations: localizations)
+                        buildButtonBar(localizations: localizations)
                     ],
                   ),
                 ),
@@ -522,7 +522,7 @@ class _TimeRangePickerState extends State<TimeRangePicker>
     );
   }
 
-  Widget _buildButtonBar({@required MaterialLocalizations localizations}) =>
+  Widget buildButtonBar({@required MaterialLocalizations localizations}) =>
       ButtonBar(
         children: <Widget>[
           FlatButton(
@@ -536,7 +536,7 @@ class _TimeRangePickerState extends State<TimeRangePicker>
         ],
       );
 
-  Widget _buildTimeRange(
+  Widget buildTimeRange(
           {@required MaterialLocalizations localizations,
           @required ThemeData themeData}) =>
       GestureDetector(
@@ -586,7 +586,7 @@ class _TimeRangePickerState extends State<TimeRangePicker>
         ),
       );
 
-  Widget _buildHeader(bool landscape) {
+  Widget buildHeader(bool landscape) {
     final ThemeData themeData = Theme.of(context);
 
     Color backgroundColor;
