@@ -322,8 +322,8 @@ class _TimeRangePickerState extends State<_TimeRangePicker>
     return TimeOfDay(hour: hours, minute: minutes);
   }
 
-  void _panStart(DragStartDetails details) {
-    var globalPoint = details.globalPosition;
+  void _panStart(PointerDownEvent details) {
+    var globalPoint = details.position;
     var snap = widget.handlerRadius * 2.5;
     RenderBox circle = _circleKey.currentContext.findRenderObject();
 
@@ -368,11 +368,11 @@ class _TimeRangePickerState extends State<_TimeRangePicker>
     }
   }
 
-  void _panUpdate(DragUpdateDetails details) {
+  void _panUpdate(PointerMoveEvent details) {
     if (_activeTime == null) return;
     RenderBox circle = _circleKey.currentContext.findRenderObject();
     final center = circle.size.center(Offset.zero);
-    final point = circle.globalToLocal(details.globalPosition);
+    final point = circle.globalToLocal(details.position);
     final touchPositionFromCenter = point - center;
     var dir = normalizeAngle(touchPositionFromCenter.direction);
 
@@ -424,7 +424,7 @@ class _TimeRangePickerState extends State<_TimeRangePicker>
         normalisedTarget <= normalisedMax;
   }
 
-  void _panEnd(DragEndDetails details) {
+  void _panEnd(dynamic event) {
     setState(() {
       _activeTime = null;
     });
@@ -531,10 +531,11 @@ class _TimeRangePickerState extends State<_TimeRangePicker>
   Widget _buildTimeRange(
           {@required MaterialLocalizations localizations,
           @required ThemeData themeData}) =>
-      GestureDetector(
-        onPanStart: _panStart,
-        onPanUpdate: _panUpdate,
-        onPanEnd: _panEnd,
+      Listener(
+        onPointerDown: _panStart,
+        onPointerMove: _panUpdate,
+        onPointerUp: _panEnd,
+        onPointerCancel: _panEnd,
         child: AspectRatio(
           aspectRatio: 1,
           child: Container(
