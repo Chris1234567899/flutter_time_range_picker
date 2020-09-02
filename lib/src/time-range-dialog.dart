@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:time_range_picker/src/clock-gesture-recognizer.dart';
 import 'package:time_range_picker/src/clock-painter.dart';
 import 'package:time_range_picker/src/utils.dart';
 
@@ -332,8 +333,9 @@ class _TimeRangePickerState extends State<TimeRangePicker>
     return TimeOfDay(hour: hours, minute: minutes);
   }
 
-  void _panStart(DragStartDetails details) {
-    var globalPoint = details.globalPosition;
+  bool _panStart(PointerDownEvent ev) {
+    bool isHandler = false;
+    var globalPoint = ev.position;
     var snap = widget.handlerRadius * 2.5;
     RenderBox circle = _circleKey.currentContext.findRenderObject();
 
@@ -344,7 +346,7 @@ class _TimeRangePickerState extends State<TimeRangePicker>
       setState(() {
         _activeTime = ActiveTime.Start;
       });
-      return;
+      return false;
     }
 
     Offset globalStartOffset =
@@ -356,13 +358,14 @@ class _TimeRangePickerState extends State<TimeRangePicker>
       setState(() {
         _activeTime = ActiveTime.Start;
       });
+      isHandler = true;
     }
 
     if (_clockPainter.endHandlerPosition == null) {
       setState(() {
         _activeTime = ActiveTime.End;
       });
-      return;
+      return false;
     }
 
     Offset globalEndOffset =
@@ -375,14 +378,17 @@ class _TimeRangePickerState extends State<TimeRangePicker>
       setState(() {
         _activeTime = ActiveTime.End;
       });
+      isHandler = true;
     }
+
+    return isHandler;
   }
 
-  void _panUpdate(DragUpdateDetails details) {
+  void _panUpdate(PointerMoveEvent ev) {
     if (_activeTime == null) return;
     RenderBox circle = _circleKey.currentContext.findRenderObject();
     final center = circle.size.center(Offset.zero);
-    final point = circle.globalToLocal(details.globalPosition);
+    final point = circle.globalToLocal(ev.position);
     final touchPositionFromCenter = point - center;
     var dir = normalizeAngle(touchPositionFromCenter.direction);
 
@@ -434,7 +440,7 @@ class _TimeRangePickerState extends State<TimeRangePicker>
         normalisedTarget <= normalisedMax;
   }
 
-  void _panEnd(DragEndDetails details) {
+  void _panEnd(PointerUpEvent ev) {
     setState(() {
       _activeTime = null;
     });
@@ -539,10 +545,15 @@ class _TimeRangePickerState extends State<TimeRangePicker>
   Widget buildTimeRange(
           {@required MaterialLocalizations localizations,
           @required ThemeData themeData}) =>
-      GestureDetector(
-        onPanStart: _panStart,
-        onPanUpdate: _panUpdate,
-        onPanEnd: _panEnd,
+      RawGestureDetector(
+        gestures: <Type, GestureRecognizerFactory>{
+          ClockGestureRecognizer:
+              GestureRecognizerFactoryWithHandlers<ClockGestureRecognizer>(
+            () => ClockGestureRecognizer(
+                panStart: _panStart, panUpdate: _panUpdate, panEnd: _panEnd),
+            (ClockGestureRecognizer instance) {},
+          ),
+        },
         child: AspectRatio(
           aspectRatio: 1,
           child: Container(
