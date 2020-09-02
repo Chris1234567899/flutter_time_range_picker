@@ -59,7 +59,9 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Column(children: [
+          child: Container(
+        width: 400,
+        child: ListView(children: [
           RaisedButton(
             onPressed: () async {
               TimeRange result = await showTimeRangePicker(
@@ -237,38 +239,32 @@ class _MyHomePageState extends State<MyHomePage> {
             'As a regular widget:',
             style: Theme.of(context).textTheme.headline6,
           ),
-          Expanded(
-              child: Container(
-                  alignment: Alignment.topCenter,
-                  height: 400,
-                  width: 400,
-                  child: TimeRangePicker(
-                    hideButtons: true,
-                    hideTimes: true,
-                    paintingStyle: PaintingStyle.fill,
-                    backgroundColor: Colors.grey.withOpacity(0.2),
-                    labels: [
-                      ClockLabel.fromTime(
-                          time: TimeOfDay(hour: 7, minute: 0),
-                          text: "Start Work"),
-                      ClockLabel.fromTime(
-                          time: TimeOfDay(hour: 18, minute: 0), text: "Go Home")
-                    ],
-                    start: TimeOfDay(hour: 10, minute: 0),
-                    end: TimeOfDay(hour: 13, minute: 0),
-                    ticks: 8,
-                    strokeColor:
-                        Theme.of(context).primaryColor.withOpacity(0.5),
-                    ticksColor: Theme.of(context).primaryColor,
-                    labelOffset: 15,
-                    padding: 60,
-                    disabledTime: TimeRange(
-                        startTime: TimeOfDay(hour: 18, minute: 0),
-                        endTime: TimeOfDay(hour: 7, minute: 0)),
-                    disabledColor: Colors.red.withOpacity(0.5),
-                  )))
+          Container(
+              child: TimeRangePicker(
+            hideButtons: true,
+            hideTimes: true,
+            paintingStyle: PaintingStyle.fill,
+            backgroundColor: Colors.grey.withOpacity(0.2),
+            labels: [
+              ClockLabel.fromTime(
+                  time: TimeOfDay(hour: 7, minute: 0), text: "Start Work"),
+              ClockLabel.fromTime(
+                  time: TimeOfDay(hour: 18, minute: 0), text: "Go Home")
+            ],
+            start: TimeOfDay(hour: 10, minute: 0),
+            end: TimeOfDay(hour: 13, minute: 0),
+            ticks: 8,
+            strokeColor: Theme.of(context).primaryColor.withOpacity(0.5),
+            ticksColor: Theme.of(context).primaryColor,
+            labelOffset: 15,
+            padding: 60,
+            disabledTime: TimeRange(
+                startTime: TimeOfDay(hour: 18, minute: 0),
+                endTime: TimeOfDay(hour: 7, minute: 0)),
+            disabledColor: Colors.red.withOpacity(0.5),
+          ))
         ]),
-      ),
+      )),
     );
   }
 }
