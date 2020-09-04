@@ -416,7 +416,10 @@ class _TimeRangePickerState extends State<TimeRangePicker>
       }
     }
 
-    final time = _angleToTime(dir);
+    var time = _angleToTime(dir);
+
+    //24 => 0
+    if (time.hour == 24) time = TimeOfDay(hour: 0, minute: time.minute);
 
     // snap to interval
     final angle = widget.snap == true ? timeToAngle(time) : dir;

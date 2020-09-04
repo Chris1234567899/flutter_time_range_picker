@@ -13,3 +13,7 @@
 ## [1.0.3] - TODO: Add release date.
 
 * Fixed a bug with landscape orientation
+
+## [1.1.0] - TODO: Add release date.
+
+* Included the timepicker as public widget and fixed some minor issues
