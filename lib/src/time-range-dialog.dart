@@ -629,6 +629,8 @@ class _TimeRangePickerState extends State<TimeRangePicker>
         break;
     }
 
+    print('I am runnig');
+
     return Container(
       color: backgroundColor,
       padding: EdgeInsets.all(24),
