@@ -120,39 +120,39 @@ showTimeRangePicker({
   final Widget dialog = Dialog(
       elevation: 12,
       child: TimeRangePicker(
-        start: start,
-        end: end,
-        disabledTime: disabledTime,
-        paintingStyle: paintingStyle,
-        onStartChange: onStartChange,
-        onEndChange: onEndChange,
-        fromText: fromText,
-        toText: toText,
-        interval: interval,
-        padding: padding,
-        strokeWidth: strokeWidth,
-        handlerRadius: handlerRadius,
-        strokeColor: strokeColor,
-        handlerColor: handlerColor,
-        selectedColor: selectedColor,
-        backgroundColor: backgroundColor,
-        disabledColor: disabledColor,
-        backgroundWidget: backgroundWidget,
-        ticks: ticks,
-        ticksLength: ticksLength,
-        ticksWidth: ticksWidth,
-        ticksOffset: ticksOffset,
-        ticksColor: ticksColor,
-        snap: snap,
-        labels: labels,
-        labelOffset: labelOffset,
-        rotateLabels: rotateLabels,
-        autoAdjustLabels: autoAdjustLabels,
-        labelStyle: labelStyle,
-        timeTextStyle: timeTextStyle,
-        activeTimeTextStyle: activeTimeTextStyle,
-        hideTimes: hideTimes,
-      ));
+          start: start,
+          end: end,
+          disabledTime: disabledTime,
+          paintingStyle: paintingStyle,
+          onStartChange: onStartChange,
+          onEndChange: onEndChange,
+          fromText: fromText,
+          toText: toText,
+          interval: interval,
+          padding: padding,
+          strokeWidth: strokeWidth,
+          handlerRadius: handlerRadius,
+          strokeColor: strokeColor,
+          handlerColor: handlerColor,
+          selectedColor: selectedColor,
+          backgroundColor: backgroundColor,
+          disabledColor: disabledColor,
+          backgroundWidget: backgroundWidget,
+          ticks: ticks,
+          ticksLength: ticksLength,
+          ticksWidth: ticksWidth,
+          ticksOffset: ticksOffset,
+          ticksColor: ticksColor,
+          snap: snap,
+          labels: labels,
+          labelOffset: labelOffset,
+          rotateLabels: rotateLabels,
+          autoAdjustLabels: autoAdjustLabels,
+          labelStyle: labelStyle,
+          timeTextStyle: timeTextStyle,
+          activeTimeTextStyle: activeTimeTextStyle,
+          hideTimes: hideTimes,
+          use24HourFormat: use24HourFormat));
 
   return await showDialog<TimeRange>(
     context: context,
@@ -212,6 +212,7 @@ class TimeRangePicker extends StatefulWidget {
 
   final bool hideTimes;
   final bool hideButtons;
+  final bool use24HourFormat;
 
   TimeRangePicker({
     Key key,
@@ -246,10 +247,12 @@ class TimeRangePicker extends StatefulWidget {
     this.labelStyle,
     this.timeTextStyle,
     this.activeTimeTextStyle,
+    use24HourFormat,
     hideTimes,
     hideButtons,
   })  : hideTimes = hideTimes == null ? false : hideTimes,
         hideButtons = hideButtons == null ? false : hideButtons,
+        use24HourFormat = use24HourFormat == null ? true : use24HourFormat,
         super(key: key);
 
   @override
@@ -637,7 +640,11 @@ class _TimeRangePickerState extends State<TimeRangePicker>
             children: [
               Text(widget.fromText, style: TextStyle(color: activeColor)),
               Text(
-                _startTime != null ? _startTime.format(context) : "-",
+                _startTime != null
+                    ? MaterialLocalizations.of(context).formatTimeOfDay(
+                        _startTime,
+                        alwaysUse24HourFormat: widget.use24HourFormat)
+                    : "-",
                 style: _activeTime == ActiveTime.Start
                     ? widget.activeTimeTextStyle ??
                         TextStyle(
@@ -655,7 +662,10 @@ class _TimeRangePickerState extends State<TimeRangePicker>
           Column(children: [
             Text(widget.toText, style: TextStyle(color: activeColor)),
             Text(
-              _endTime != null ? _endTime.format(context) : "-",
+              _endTime != null
+                  ? MaterialLocalizations.of(context).formatTimeOfDay(_endTime,
+                      alwaysUse24HourFormat: widget.use24HourFormat)
+                  : "-",
               style: _activeTime == ActiveTime.End
                   ? widget.activeTimeTextStyle ??
                       TextStyle(
