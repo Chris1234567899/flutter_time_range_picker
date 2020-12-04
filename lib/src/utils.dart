@@ -1,14 +1,14 @@
-
-
 import 'dart:math';
 import 'package:flutter/material.dart';
 
+//normalize angle
 double normalizeAngle(double radians) {
   var normalized = atan2(sin(radians), cos(radians));
   normalized = normalized > 0 ? normalized : 2 * pi + normalized;
   return normalized;
 }
 
+//convert a time to the correct angle of the clock
 double timeToAngle(TimeOfDay time) {
   int min = time.hour * 60 + time.minute;
   double angle = min * pi * 2 / 60 / 24;
@@ -20,7 +20,6 @@ double standardizeToOffsetAngle(double angle, double offsetAngle) {
   return stan == 2 * pi ? 0 : stan;
 }
 
-
 enum ActiveTime { Start, End }
 
 class TimeRange {
@@ -29,7 +28,6 @@ class TimeRange {
 
   TimeRange({@required this.startTime, @required this.endTime});
 }
-
 
 class ClockLabel {
   double angle;
@@ -55,5 +53,3 @@ class ClockLabel {
     return ClockLabel(angle: angle, text: text);
   }
 }
-
-

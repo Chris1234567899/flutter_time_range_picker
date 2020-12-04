@@ -17,3 +17,7 @@
 ## [1.1.0] - TODO: Add release date.
 
 * Included the timepicker as public widget and fixed some minor issues
+
+## [1.1.1] - TODO: Add release date.
+
+* Fixed a bug with am / pm
