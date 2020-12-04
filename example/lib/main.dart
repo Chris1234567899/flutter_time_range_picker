@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:time_range_picker/time_range_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -81,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 print("end time " + end.toString());
               },
               interval: Duration(minutes: 30),
-              use24HourFormat: true,
+              use24HourFormat: false,
               padding: 30,
               strokeWidth: 20,
               handlerRadius: 14,
@@ -112,12 +111,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   fontWeight: FontWeight.bold),
               timeTextStyle: TextStyle(
                   color: Colors.orange[700],
-                  fontSize: 32,
+                  fontSize: 24,
                   fontStyle: FontStyle.italic,
                   fontWeight: FontWeight.bold),
               activeTimeTextStyle: TextStyle(
                   color: Colors.orange,
-                  fontSize: 32,
+                  fontSize: 26,
                   fontStyle: FontStyle.italic,
                   fontWeight: FontWeight.bold),
             );
