@@ -102,6 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 "3 pm",
                 "6 pm",
                 "9 pm"
+
               ].asMap().entries.map((e) {
                 ClockLabel label=ClockLabel.fromIndex(
                   idx: e.key, length: 8, text: e.value, );
