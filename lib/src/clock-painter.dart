@@ -181,7 +181,7 @@ class ClockPainter extends CustomPainter {
   void drawText(
       Canvas canvas, Paint paint, String text, Offset position, double angle) {
 
-    angle = normalizeAngle(angle)+rotateAngle;
+    angle = normalizeAngle(angle-rotateAngle)+rotateAngle;
 
 
     TextSpan span = new TextSpan(
