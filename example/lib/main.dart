@@ -68,6 +68,63 @@ class _MyHomePageState extends State<MyHomePage> {
           },
           child: Text("Pure"),
         ),
+
+        RaisedButton(
+          onPressed: () {
+            showTimeRangePicker(
+              context: context,
+              start: TimeOfDay(hour: 22, minute: 9),
+              onStartChange: (start) {
+
+              },
+              onEndChange: (end) {
+
+              },
+              interval: Duration(minutes: 30),
+              use24HourFormat: true,
+              strokeWidth: 20,
+              hideButtons: false,
+              hideTimes: false,
+              rotateAngle: 180.0,
+              strokeColor: Colors.orange,
+              handlerColor: Colors.orange[700],
+              selectedColor: Colors.amber,
+              backgroundColor: Colors.black.withOpacity(0.3),
+              ticks: 12,
+              ticksColor: Colors.white,
+              snap: true,
+              labels: [
+                "12 pm",
+                "3 am",
+                "6 am",
+                "9 am",
+                "12 am",
+                "3 pm",
+                "6 pm",
+                "9 pm"
+              ].asMap().entries.map((e) {
+                ClockLabel label=ClockLabel.fromIndex(
+                  idx: e.key, length: 8, text: e.value, );
+                return label;
+              }).toList(),
+              labelStyle: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold),
+              timeTextStyle: TextStyle(
+                  color: Colors.orange[700],
+                  fontSize: 24,
+                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.bold),
+              activeTimeTextStyle: TextStyle(
+                  color: Colors.orange,
+                  fontSize: 26,
+                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.bold),
+            );
+          },
+          child: Text("ROTATED 180"),
+        ),
         RaisedButton(
           onPressed: () {
             showTimeRangePicker(
