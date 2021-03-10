@@ -9,10 +9,10 @@ double normalizeAngle(double radians) {
 }
 
 //convert a time to the correct angle of the clock
-double timeToAngle(TimeOfDay time) {
+double timeToAngle(TimeOfDay time, double offsetRad) {
   int min = time.hour * 60 + time.minute;
   double angle = min * pi * 2 / 60 / 24;
-  return normalizeAngle(angle + pi / 2);
+  return normalizeAngle(angle + pi / 2 + offsetRad);
 }
 
 double standardizeToOffsetAngle(double angle, double offsetAngle) {
@@ -27,6 +27,10 @@ class TimeRange {
   TimeOfDay endTime;
 
   TimeRange({@required this.startTime, @required this.endTime});
+
+  String toString() {
+    return "Start: ${startTime.toString()} to ${endTime.toString()}";
+  }
 }
 
 class ClockLabel {
@@ -41,7 +45,7 @@ class ClockLabel {
 
   factory ClockLabel.fromTime(
       {@required TimeOfDay time, @required String text}) {
-    double angle = timeToAngle(time);
+    double angle = timeToAngle(time, 0);
 
     return ClockLabel(angle: angle, text: text);
   }

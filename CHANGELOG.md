@@ -21,3 +21,9 @@
 ## [1.1.1] - TODO: Add release date.
 
 * Fixed a bug with am / pm
+
+## [1.2.0] - TODO: Add release date.
+
+* Added clock rotation parameter
+* Added max duration parameter
+* Added null safety support

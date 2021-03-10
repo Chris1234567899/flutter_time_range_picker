@@ -132,4 +132,7 @@ class MyHomePage extends StatelessWidget {
 | TextStyle           | timeTextStyle       |                             | TextStyle of the time texts                                                     |     |
 | TextStyle           | activeTimeTextStyle |                             | TextStyle of the currently moving time text                                     |     |
 | bool                | hideTimes           | false                       | hide the time texts                                                             |     |
+| double              | clockRotation       | 0                           | rotate the clock around angle                                                   |
+| Duration            | maxDuration         | null                        | maximum Duration that can be picked                                             |     |
+
 

@@ -37,6 +37,7 @@ class ClockPainter extends CustomPainter {
   bool rotateLabels;
   bool autoAdjustLabels;
   TextPainter _textPainter;
+  double offsetRad;
   get startHandlerPosition {
     return _startHandlerPosition;
   }
@@ -45,31 +46,33 @@ class ClockPainter extends CustomPainter {
     return _endHandlerPosition;
   }
 
-  ClockPainter(
-      {@required this.startAngle,
-      @required this.endAngle,
-      @required this.disabledStartAngle,
-      @required this.disabledEndAngle,
-      @required this.activeTime,
-      @required this.radius,
-      @required this.strokeWidth,
-      @required this.handlerRadius,
-      @required this.strokeColor,
-      @required this.handlerColor,
-      @required this.selectedColor,
-      @required this.backgroundColor,
-      @required this.disabledColor,
-      @required this.paintingStyle,
-      @required this.ticks,
-      @required this.ticksOffset,
-      @required this.ticksLength,
-      @required this.ticksWidth,
-      @required this.ticksColor,
-      @required this.labels,
-      @required this.labelStyle,
-      @required this.labelOffset,
-      @required this.rotateLabels,
-      @required this.autoAdjustLabels});
+  ClockPainter({
+    @required this.startAngle,
+    @required this.endAngle,
+    @required this.disabledStartAngle,
+    @required this.disabledEndAngle,
+    @required this.activeTime,
+    @required this.radius,
+    @required this.strokeWidth,
+    @required this.handlerRadius,
+    @required this.strokeColor,
+    @required this.handlerColor,
+    @required this.selectedColor,
+    @required this.backgroundColor,
+    @required this.disabledColor,
+    @required this.paintingStyle,
+    @required this.ticks,
+    @required this.ticksOffset,
+    @required this.ticksLength,
+    @required this.ticksWidth,
+    @required this.ticksColor,
+    @required this.labels,
+    @required this.labelStyle,
+    @required this.labelOffset,
+    @required this.rotateLabels,
+    @required this.autoAdjustLabels,
+    @required this.offsetRad,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -152,8 +155,7 @@ class ClockPainter extends CustomPainter {
     paint.color = ticksColor;
     paint.strokeWidth = ticksWidth;
     List.generate(ticks, (i) => i + 1).forEach((i) {
-      double angle = (360 / ticks) * i * pi / 180;
-
+      double angle = (360 / ticks) * i * pi / 180 + offsetRad;
       canvas.drawLine(calcCoords(radius, radius, angle, r),
           calcCoords(radius, radius, angle, r + ticksLength), paint);
     });
@@ -168,14 +170,16 @@ class ClockPainter extends CustomPainter {
           canvas,
           paint,
           label.text,
-          calcCoords(radius, radius, label.angle, radius + labelOffset),
-          label.angle);
+          calcCoords(
+              radius, radius, label.angle + offsetRad, radius + labelOffset),
+          label.angle + offsetRad);
     });
   }
 
   void drawText(
       Canvas canvas, Paint paint, String text, Offset position, double angle) {
     angle = normalizeAngle(angle);
+
     TextSpan span = new TextSpan(
       text: text,
       style: labelStyle,

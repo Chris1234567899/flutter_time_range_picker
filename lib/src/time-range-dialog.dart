@@ -109,6 +109,12 @@ showTimeRangePicker({
 
   /// hide the button bar
   bool hideButtons = false,
+
+  /// rotate the clock by angle
+  double clockRotation = 0,
+
+  /// maximum selectable duration
+  Duration maxDuration,
   TransitionBuilder builder,
   bool useRootNavigator = true,
   RouteSettings routeSettings,
@@ -153,6 +159,8 @@ showTimeRangePicker({
         activeTimeTextStyle: activeTimeTextStyle,
         hideTimes: hideTimes,
         use24HourFormat: use24HourFormat,
+        clockRotation: clockRotation,
+        maxDuration: maxDuration,
       ));
 
   return await showDialog<TimeRange>(
@@ -215,6 +223,9 @@ class TimeRangePicker extends StatefulWidget {
   final bool hideButtons;
   final bool use24HourFormat;
 
+  final double clockRotation;
+  final Duration maxDuration;
+
   TimeRangePicker({
     Key key,
     this.start,
@@ -248,6 +259,8 @@ class TimeRangePicker extends StatefulWidget {
     this.labelStyle,
     this.timeTextStyle,
     this.activeTimeTextStyle,
+    this.clockRotation = 0,
+    this.maxDuration,
     use24HourFormat,
     hideTimes,
     hideButtons,
@@ -276,8 +289,12 @@ class _TimeRangePickerState extends State<TimeRangePicker>
   TimeOfDay _endTime;
   double _radius = 50;
 
+  double offsetRad;
+
   @override
   void initState() {
+    offsetRad = (widget.clockRotation * pi / 180);
+
     WidgetsBinding.instance.addObserver(this);
     var startTime = widget.start ?? TimeOfDay.now();
     var endTime = widget.end ??
@@ -286,13 +303,25 @@ class _TimeRangePickerState extends State<TimeRangePicker>
                 startTime.hour < 21 ? startTime.hour + 3 : startTime.hour - 21);
 
     _startTime = _roundMinutes(startTime.hour * 60 + startTime.minute * 1.0);
-    _startAngle = timeToAngle(_startTime);
+    _startAngle = timeToAngle(_startTime, offsetRad);
     _endTime = _roundMinutes(endTime.hour * 60 + endTime.minute * 1.0);
-    _endAngle = timeToAngle(_endTime);
+
+    if (widget.maxDuration != null) {
+      var startDate = DateTime(2020, 1, 1, _startTime.hour, _startTime.minute);
+      var endDate = DateTime(2020, 1, 1, _endTime.hour, _endTime.minute);
+      var duration = endDate.difference(startDate);
+      if (duration.inMinutes > widget.maxDuration.inMinutes) {
+        var maxDate = startDate.add(widget.maxDuration);
+        _endTime = TimeOfDay(hour: maxDate.hour, minute: maxDate.minute);
+      }
+    }
+
+    _endAngle = timeToAngle(_endTime, offsetRad);
 
     if (widget.disabledTime != null) {
-      _disabledStartAngle = timeToAngle(widget.disabledTime.startTime);
-      _disabledEndAngle = timeToAngle(widget.disabledTime.endTime);
+      _disabledStartAngle =
+          timeToAngle(widget.disabledTime.startTime, offsetRad);
+      _disabledEndAngle = timeToAngle(widget.disabledTime.endTime, offsetRad);
     }
     WidgetsBinding.instance.addPostFrameCallback((_) => setRadius());
 
@@ -420,20 +449,15 @@ class _TimeRangePickerState extends State<TimeRangePicker>
       }
     }
 
-    var time = _angleToTime(dir);
+    var time = _angleToTime(dir - offsetRad);
 
     //24 => 0
     if (time.hour == 24) time = TimeOfDay(hour: 0, minute: time.minute);
 
     // snap to interval
-    final angle = widget.snap == true ? timeToAngle(time) : dir;
+    final angle = widget.snap == true ? timeToAngle(time, -offsetRad) : dir;
 
-    setState(() {
-      if (_activeTime == ActiveTime.Start)
-        _startAngle = angle;
-      else
-        _endAngle = angle;
-    });
+    _updateAngles(angle);
     _updateTime(time);
   }
 
@@ -453,20 +477,65 @@ class _TimeRangePickerState extends State<TimeRangePicker>
     });
   }
 
-  _updateTime(TimeOfDay time) {
+  _updateAngles(double angle) {
     setState(() {
       if (_activeTime == ActiveTime.Start) {
+        _startAngle = angle;
+      } else
+        _endAngle = angle;
+    });
+  }
+
+  _updateTime(TimeOfDay time) {
+    if (_activeTime == ActiveTime.Start) {
+      setState(() {
         _startTime = time;
-        if (widget.onStartChange != null) {
-          widget.onStartChange(_startTime);
-        }
-      } else {
+      });
+      if (widget.onStartChange != null) {
+        widget.onStartChange(_startTime);
+      }
+    } else {
+      setState(() {
         _endTime = time;
-        if (widget.onEndChange != null) {
-          widget.onEndChange(_endTime);
+      });
+      if (widget.onEndChange != null) {
+        widget.onEndChange(_endTime);
+      }
+    }
+
+//check max duration
+    if (widget.maxDuration != null) {
+      var startMin = _startTime.hour * 60 + _startTime.minute;
+      var endMin = _endTime.hour * 60 + _endTime.minute;
+
+      //if endtime is on new day
+      if (endMin < startMin) endMin += 24 * 60;
+
+      var duration = Duration(minutes: endMin - startMin);
+      if (duration.inMinutes > widget.maxDuration.inMinutes) {
+        if (_activeTime == ActiveTime.Start) {
+          var adjustedEndTime =
+              _roundMinutes(startMin + widget.maxDuration.inMinutes * 1.0);
+          setState(() {
+            _endTime = adjustedEndTime;
+            _endAngle = timeToAngle(_endTime, offsetRad);
+          });
+          if (widget.onEndChange != null) {
+            widget.onEndChange(_endTime);
+          }
+        } else {
+          var adjustedEndTime =
+              _roundMinutes(endMin - widget.maxDuration.inMinutes * 1.0);
+          setState(() {
+            _startTime = adjustedEndTime;
+            _startAngle = timeToAngle(_startTime, offsetRad);
+          });
+          if (widget.onStartChange != null) {
+            widget.onStartChange(_startTime);
+          }
         }
       }
-    });
+    }
   }
 
   _submit() {
@@ -538,11 +607,11 @@ class _TimeRangePickerState extends State<TimeRangePicker>
   Widget buildButtonBar({@required MaterialLocalizations localizations}) =>
       ButtonBar(
         children: <Widget>[
-          FlatButton(
+          TextButton(
             child: Text(localizations.cancelButtonLabel),
             onPressed: _cancel,
           ),
-          FlatButton(
+          TextButton(
             child: Text(localizations.okButtonLabel),
             onPressed: _submit,
           ),
@@ -569,34 +638,34 @@ class _TimeRangePickerState extends State<TimeRangePicker>
               child: CustomPaint(
                 key: _circleKey,
                 painter: ClockPainter(
-                  activeTime: _activeTime,
-                  startAngle: _startAngle,
-                  endAngle: _endAngle,
-                  disabledStartAngle: _disabledStartAngle,
-                  disabledEndAngle: _disabledEndAngle,
-                  radius: _radius,
-                  strokeWidth: widget.strokeWidth ?? 12,
-                  handlerRadius: widget.handlerRadius ?? 12,
-                  strokeColor: widget.strokeColor ?? themeData.primaryColor,
-                  handlerColor: widget.handlerColor ?? themeData.primaryColor,
-                  selectedColor:
-                      widget.selectedColor ?? themeData.primaryColorLight,
-                  backgroundColor: widget.backgroundColor ?? Colors.grey[200],
-                  disabledColor:
-                      widget.disabledColor ?? Colors.red.withOpacity(0.5),
-                  paintingStyle: widget.paintingStyle ?? PaintingStyle.stroke,
-                  ticks: widget.ticks,
-                  ticksColor: widget.ticksColor ?? Colors.white,
-                  ticksLength: widget.ticksLength ?? widget.strokeWidth ?? 12,
-                  ticksWidth: widget.ticksWidth ?? 1,
-                  ticksOffset: widget.ticksOffset ?? 0,
-                  labels: widget.labels,
-                  labelStyle:
-                      widget.labelStyle ?? themeData.textTheme.bodyText1,
-                  labelOffset: widget.labelOffset ?? 20,
-                  rotateLabels: widget.rotateLabels ?? true,
-                  autoAdjustLabels: widget.autoAdjustLabels ?? true,
-                ),
+                    activeTime: _activeTime,
+                    startAngle: _startAngle,
+                    endAngle: _endAngle,
+                    disabledStartAngle: _disabledStartAngle,
+                    disabledEndAngle: _disabledEndAngle,
+                    radius: _radius,
+                    strokeWidth: widget.strokeWidth ?? 12,
+                    handlerRadius: widget.handlerRadius ?? 12,
+                    strokeColor: widget.strokeColor ?? themeData.primaryColor,
+                    handlerColor: widget.handlerColor ?? themeData.primaryColor,
+                    selectedColor:
+                        widget.selectedColor ?? themeData.primaryColorLight,
+                    backgroundColor: widget.backgroundColor ?? Colors.grey[200],
+                    disabledColor:
+                        widget.disabledColor ?? Colors.red.withOpacity(0.5),
+                    paintingStyle: widget.paintingStyle ?? PaintingStyle.stroke,
+                    ticks: widget.ticks,
+                    ticksColor: widget.ticksColor ?? Colors.white,
+                    ticksLength: widget.ticksLength ?? widget.strokeWidth ?? 12,
+                    ticksWidth: widget.ticksWidth ?? 1,
+                    ticksOffset: widget.ticksOffset ?? 0,
+                    labels: widget.labels,
+                    labelStyle:
+                        widget.labelStyle ?? themeData.textTheme.bodyText1,
+                    labelOffset: widget.labelOffset ?? 20,
+                    rotateLabels: widget.rotateLabels ?? true,
+                    autoAdjustLabels: widget.autoAdjustLabels ?? true,
+                    offsetRad: offsetRad),
                 size: Size.fromRadius(_radius),
               ),
             ),
