@@ -110,7 +110,7 @@ class MyHomePage extends StatelessWidget {
 | String              | fromText            | "From"                      | label for start time                                                            |     |
 | String              | toText              | "To"                        | label for end time                                                              |     |
 | bool                | use24HourFormat     | true                        | use 24 hours or am / pm                                                         |     |
-| double              | padding             | 26                          | the padding of the ring                                                         |     |
+| double              | padding             | 36                          | the padding of the ring                                                         |     |
 | double              | strokeWidth         | 12                          | the thickness of the ring                                                       |     |
 | Color               | strokeColor         | primaryColor                | the color of the active arc from start time to end time                         |     |
 | double              | handlerRadius       | 12                          | the radius of the handler to drag the arc                                       |     |

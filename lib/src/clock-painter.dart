@@ -4,14 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:time_range_picker/src/utils.dart';
 
 class ClockPainter extends CustomPainter {
-  double startAngle;
-  double endAngle;
+  double? startAngle;
+  double? endAngle;
 
-  double disabledStartAngle;
-  double disabledEndAngle;
-  ActiveTime activeTime;
+  double? disabledStartAngle;
+  double? disabledEndAngle;
+  ActiveTime? activeTime;
 
-  double sweepAngle;
   double radius;
 
   double strokeWidth;
@@ -23,20 +22,21 @@ class ClockPainter extends CustomPainter {
   Color disabledColor;
   PaintingStyle paintingStyle;
 
-  Offset _startHandlerPosition;
-  Offset _endHandlerPosition;
+  Offset? _startHandlerPosition;
+  Offset? _endHandlerPosition;
+  late TextPainter _textPainter;
 
-  int ticks;
+  int? ticks;
   double ticksOffset;
   double ticksLength;
   double ticksWidth;
   Color ticksColor;
   List<ClockLabel> labels;
-  TextStyle labelStyle;
+  TextStyle? labelStyle;
   double labelOffset;
   bool rotateLabels;
   bool autoAdjustLabels;
-  TextPainter _textPainter;
+
   double offsetRad;
   get startHandlerPosition {
     return _startHandlerPosition;
@@ -47,31 +47,31 @@ class ClockPainter extends CustomPainter {
   }
 
   ClockPainter({
-    @required this.startAngle,
-    @required this.endAngle,
-    @required this.disabledStartAngle,
-    @required this.disabledEndAngle,
-    @required this.activeTime,
-    @required this.radius,
-    @required this.strokeWidth,
-    @required this.handlerRadius,
-    @required this.strokeColor,
-    @required this.handlerColor,
-    @required this.selectedColor,
-    @required this.backgroundColor,
-    @required this.disabledColor,
-    @required this.paintingStyle,
-    @required this.ticks,
-    @required this.ticksOffset,
-    @required this.ticksLength,
-    @required this.ticksWidth,
-    @required this.ticksColor,
-    @required this.labels,
-    @required this.labelStyle,
-    @required this.labelOffset,
-    @required this.rotateLabels,
-    @required this.autoAdjustLabels,
-    @required this.offsetRad,
+    this.startAngle,
+    this.endAngle,
+    this.disabledStartAngle,
+    this.disabledEndAngle,
+    this.activeTime,
+    required this.radius,
+    required this.strokeWidth,
+    required this.handlerRadius,
+    required this.strokeColor,
+    required this.handlerColor,
+    required this.selectedColor,
+    required this.backgroundColor,
+    required this.disabledColor,
+    required this.paintingStyle,
+    required this.ticks,
+    required this.ticksOffset,
+    required this.ticksLength,
+    required this.ticksWidth,
+    required this.ticksColor,
+    required this.labels,
+    this.labelStyle,
+    required this.labelOffset,
+    required this.rotateLabels,
+    required this.autoAdjustLabels,
+    required this.offsetRad,
   });
 
   @override
@@ -89,25 +89,24 @@ class ClockPainter extends CustomPainter {
 
     if (disabledStartAngle != null && disabledEndAngle != null) {
       paint.color = disabledColor;
-      var start = normalizeAngle(disabledStartAngle);
-      var end = normalizeAngle(disabledEndAngle);
+      var start = normalizeAngle(disabledStartAngle!);
+      var end = normalizeAngle(disabledEndAngle!);
       var sweep = calcSweepAngle(start, end);
 
       canvas.drawArc(
           rect, start, sweep, paintingStyle == PaintingStyle.fill, paint);
     }
 
-    if (ticks != null)
-      drawTicks(
-        paint,
-        canvas,
-      );
+    drawTicks(
+      paint,
+      canvas,
+    );
 
     paint.color = strokeColor;
     paint.strokeWidth = strokeWidth;
     if (startAngle != null && endAngle != null) {
-      var start = normalizeAngle(startAngle);
-      var end = normalizeAngle(endAngle);
+      var start = normalizeAngle(startAngle!);
+      var end = normalizeAngle(endAngle!);
       var sweep = calcSweepAngle(start, end);
 
       canvas.drawArc(
@@ -117,11 +116,10 @@ class ClockPainter extends CustomPainter {
       drawHandler(paint, canvas, ActiveTime.End, end);
     }
 
-    if (labels != null)
-      drawLabels(
-        paint,
-        canvas,
-      );
+    drawLabels(
+      paint,
+      canvas,
+    );
 
     canvas.save();
     canvas.restore();
@@ -154,8 +152,8 @@ class ClockPainter extends CustomPainter {
     var r = radius + ticksOffset - strokeWidth / 2;
     paint.color = ticksColor;
     paint.strokeWidth = ticksWidth;
-    List.generate(ticks, (i) => i + 1).forEach((i) {
-      double angle = (360 / ticks) * i * pi / 180 + offsetRad;
+    List.generate(ticks!, (i) => i + 1).forEach((i) {
+      double angle = (360 / ticks!) * i * pi / 180 + offsetRad;
       canvas.drawLine(calcCoords(radius, radius, angle, r),
           calcCoords(radius, radius, angle, r + ticksLength), paint);
     });

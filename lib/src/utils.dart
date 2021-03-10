@@ -26,7 +26,7 @@ class TimeRange {
   TimeOfDay startTime;
   TimeOfDay endTime;
 
-  TimeRange({@required this.startTime, @required this.endTime});
+  TimeRange({required this.startTime, required this.endTime});
 
   String toString() {
     return "Start: ${startTime.toString()} to ${endTime.toString()}";
@@ -37,21 +37,20 @@ class ClockLabel {
   double angle;
   String text;
 
-  ClockLabel({@required this.angle, @required this.text});
+  ClockLabel({required this.angle, required this.text});
 
-  factory ClockLabel.fromDegree({@required double deg, @required String text}) {
+  factory ClockLabel.fromDegree({required double deg, required String text}) {
     return ClockLabel(angle: deg * pi / 180, text: text);
   }
 
-  factory ClockLabel.fromTime(
-      {@required TimeOfDay time, @required String text}) {
+  factory ClockLabel.fromTime({required TimeOfDay time, required String text}) {
     double angle = timeToAngle(time, 0);
 
     return ClockLabel(angle: angle, text: text);
   }
 
   factory ClockLabel.fromIndex(
-      {@required int idx, @required int length, @required String text}) {
+      {required int idx, required int length, required String text}) {
     double angle = (2 * pi / length) * idx + pi / 2;
 
     return ClockLabel(angle: angle, text: text);
