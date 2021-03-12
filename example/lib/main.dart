@@ -64,6 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
             TimeRange result = await showTimeRangePicker(
               context: context,
             );
+
             print("result " + result.toString());
           },
           child: Text("Pure"),

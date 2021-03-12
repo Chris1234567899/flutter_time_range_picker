@@ -21,7 +21,7 @@ showTimeRangePicker({
   Color? disabledColor,
 
   /// Style of the arc (filled or stroke)
-  PaintingStyle? paintingStyle,
+  PaintingStyle paintingStyle = PaintingStyle.stroke,
 
   /// if start time changed
   void Function(TimeOfDay)? onStartChange,
@@ -30,28 +30,28 @@ showTimeRangePicker({
   void Function(TimeOfDay)? onEndChange,
 
   /// Minimum time steps that can be selected
-  Duration? interval,
+  Duration interval = const Duration(minutes: 5),
 
   /// label for start time
-  String? fromText,
+  String fromText = "From",
 
   /// label for end time
-  String? toText,
+  String toText = "To",
 
   /// use 24 hours or am / pm
-  bool? use24HourFormat,
+  bool use24HourFormat = true,
 
   /// the padding of the ring
-  double? padding,
+  double padding = 36,
 
   /// the thickness of the ring
-  double? strokeWidth,
+  double strokeWidth = 12,
 
   /// the color of the active arc from start time to end time
   Color? strokeColor,
 
   /// the radius of the handler to drag the arc
-  double? handlerRadius,
+  double handlerRadius = 12,
 
   /// the color of a  handler
   Color? handlerColor,
@@ -66,34 +66,34 @@ showTimeRangePicker({
   Widget? backgroundWidget,
 
   /// number of ticks displayed
-  int? ticks,
+  int ticks = 0,
 
   /// the offset for ticks
-  double? ticksOffset,
+  double ticksOffset = 0,
 
   /// ticks length
   double? ticksLength,
 
   /// ticks thickness
-  double? ticksWidth,
+  double ticksWidth = 1,
 
   /// Color of ticks
-  Color? ticksColor,
+  Color ticksColor = Colors.white,
 
   /// Snap time bar to interval
-  bool? snap,
+  bool snap = false,
 
   /// Show labels around the circle (start at 0 hours)
   List<ClockLabel>? labels,
 
   /// Offset of the labels
-  double? labelOffset,
+  double labelOffset = 20,
 
   /// rotate labels
-  bool? rotateLabels,
+  bool rotateLabels = true,
 
   /// flip labels if the angle woulb be upside down (only if rotate labels is active)
-  bool? autoAdjustLabels,
+  bool autoAdjustLabels = true,
 
   /// Style of the labels
   TextStyle? labelStyle,
@@ -105,13 +105,13 @@ showTimeRangePicker({
   TextStyle? activeTimeTextStyle,
 
   /// hide the time texts
-  bool? hideTimes,
+  bool hideTimes = false,
 
   /// hide the button bar
-  bool? hideButtons,
+  bool hideButtons = false,
 
   /// rotate the clock by angle
-  double? clockRotation,
+  double clockRotation = 0,
 
   /// maximum selectable duration
   Duration? maxDuration,
@@ -127,37 +127,37 @@ showTimeRangePicker({
         start: start,
         end: end,
         disabledTime: disabledTime,
-        paintingStyle: paintingStyle = PaintingStyle.stroke,
+        paintingStyle: paintingStyle,
         onStartChange: onStartChange,
         onEndChange: onEndChange,
-        fromText: fromText = "From",
-        toText: toText = "To",
-        interval: interval = const Duration(minutes: 5),
-        padding: padding = 36,
-        strokeWidth: strokeWidth = 12,
-        handlerRadius: handlerRadius = 12,
+        fromText: fromText,
+        toText: toText,
+        interval: interval,
+        padding: padding,
+        strokeWidth: strokeWidth,
+        handlerRadius: handlerRadius,
         strokeColor: strokeColor,
         handlerColor: handlerColor,
         selectedColor: selectedColor,
         backgroundColor: backgroundColor,
         disabledColor: disabledColor,
         backgroundWidget: backgroundWidget,
-        ticks: ticks = 0,
+        ticks: ticks,
         ticksLength: ticksLength,
-        ticksWidth: ticksWidth = 1,
-        ticksOffset: ticksOffset = 0,
-        ticksColor: ticksColor = Colors.white,
-        snap: snap = false,
+        ticksWidth: ticksWidth,
+        ticksOffset: ticksOffset,
+        ticksColor: ticksColor,
+        snap: snap,
         labels: labels,
-        labelOffset: labelOffset = 20,
-        rotateLabels: rotateLabels = true,
-        autoAdjustLabels: autoAdjustLabels = true,
+        labelOffset: labelOffset,
+        rotateLabels: rotateLabels,
+        autoAdjustLabels: autoAdjustLabels,
         labelStyle: labelStyle,
         timeTextStyle: timeTextStyle,
         activeTimeTextStyle: activeTimeTextStyle,
         hideTimes: hideTimes,
         use24HourFormat: use24HourFormat,
-        clockRotation: clockRotation = 0,
+        clockRotation: clockRotation,
         maxDuration: maxDuration,
       ));
 
@@ -257,13 +257,10 @@ class TimeRangePicker extends StatefulWidget {
     this.activeTimeTextStyle,
     this.clockRotation = 0,
     this.maxDuration,
-    use24HourFormat,
-    hideTimes,
-    hideButtons,
-  })  : hideTimes = hideTimes == null ? false : hideTimes,
-        hideButtons = hideButtons == null ? false : hideButtons,
-        use24HourFormat = use24HourFormat == null ? true : use24HourFormat,
-        ticksLength = ticksLength == null ? strokeWidth : 12,
+    this.use24HourFormat = true,
+    this.hideTimes = false,
+    this.hideButtons = false,
+  })  : ticksLength = ticksLength == null ? strokeWidth : 12,
         super(key: key);
 
   @override
