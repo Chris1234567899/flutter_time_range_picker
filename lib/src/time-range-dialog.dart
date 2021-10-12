@@ -357,6 +357,10 @@ class _TimeRangePickerState extends State<TimeRangePicker>
 
     int hours = (roundedMin / 60).floor();
     int minutes = (roundedMin % 60).round();
+    if (hours > 23) // To fix for hour values bigger than 23:59!
+    {
+      hours -= 24;
+    } /* else not needed */
     return TimeOfDay(hour: hours, minute: minutes);
   }
 
