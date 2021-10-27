@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:time_range_picker/time_range_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key? key, this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -45,7 +46,7 @@ class MyHomePage extends StatefulWidget {
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
 
-  final String title;
+  final String? title;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -56,12 +57,12 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.title!),
       ),
       body: ListView(children: [
         ElevatedButton(
           onPressed: () async {
-            TimeRange result = await showTimeRangePicker(
+            TimeRange? result = await showTimeRangePicker(
               context: context,
             );
 
@@ -126,7 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         ElevatedButton(
           onPressed: () async {
-            TimeRange result = await showTimeRangePicker(
+            TimeRange? result = await showTimeRangePicker(
                 context: context,
                 start: TimeOfDay(hour: 9, minute: 0),
                 end: TimeOfDay(hour: 12, minute: 0),
@@ -162,7 +163,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         ElevatedButton(
           onPressed: () async {
-            TimeRange result = await showTimeRangePicker(
+            TimeRange? result = await showTimeRangePicker(
               context: context,
               paintingStyle: PaintingStyle.fill,
               backgroundColor: Colors.grey.withOpacity(0.2),
@@ -191,7 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         ElevatedButton(
           onPressed: () async {
-            TimeRange result = await showTimeRangePicker(
+            TimeRange? result = await showTimeRangePicker(
               context: context,
               strokeColor: Colors.teal,
               handlerColor: Colors.teal[200],
@@ -232,7 +233,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         ElevatedButton(
           onPressed: () async {
-            TimeRange result = await showTimeRangePicker(
+            TimeRange? result = await showTimeRangePicker(
               context: context,
               strokeWidth: 4,
               ticks: 12,
@@ -271,7 +272,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         ElevatedButton(
           onPressed: () async {
-            TimeRange result = await showTimeRangePicker(
+            TimeRange? result = await showTimeRangePicker(
               context: context,
               rotateLabels: false,
               ticks: 12,
@@ -294,9 +295,12 @@ class _MyHomePageState extends State<MyHomePage> {
               padding: 55,
               start: TimeOfDay(hour: 12, minute: 0),
               end: TimeOfDay(hour: 18, minute: 0),
+              /* 
               disabledTime: TimeRange(
                   startTime: TimeOfDay(hour: 4, minute: 0),
-                  endTime: TimeOfDay(hour: 10, minute: 0)),
+                  endTime: TimeOfDay(hour: 10, minute: 0),
+                ),
+              */
               maxDuration: Duration(hours: 4),
             );
 
@@ -337,6 +341,116 @@ class _MyHomePageState extends State<MyHomePage> {
             disabledColor: Colors.red.withOpacity(0.5),
           ),
         ),
+        ElevatedButton(
+          onPressed: () async {
+            TimeRange? result = await showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                TimeOfDay _startTime = TimeOfDay.now();
+                TimeOfDay _endTime = TimeOfDay.now();
+                return AlertDialog(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text("Choose a nice timeframe"),
+                  content: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 450,
+                    child: TimeRangePicker(
+                      hideButtons: true,
+                      onStartChange: (start) {
+                        setState(() {
+                          _startTime = start;
+                        });
+                      },
+                      onEndChange: (end) {
+                        setState(() {
+                          _endTime = end;
+                        });
+                      },
+                    ),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                        child: Text('My custom cancel'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        }),
+                    TextButton(
+                      child: Text('My custom ok'),
+                      onPressed: () {
+                        Navigator.of(context).pop(TimeRange(
+                            startTime: _startTime, endTime: _endTime));
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+
+            print(result.toString());
+          },
+          child: Text("Custom Dialog"),
+        ),
+        ElevatedButton(
+            onPressed: () {
+              showCupertinoDialog(
+                barrierDismissible: true,
+                context: context,
+                builder: (BuildContext context) {
+                  TimeOfDay _startTime = TimeOfDay.now();
+                  TimeOfDay _endTime = TimeOfDay.now();
+                  return CupertinoAlertDialog(
+                    content: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 340,
+                        child: Column(
+                          children: [
+                            TimeRangePicker(
+                              padding: 22,
+                              hideButtons: true,
+                              handlerRadius: 8,
+                              strokeWidth: 4,
+                              ticks: 12,
+                              activeTimeTextStyle: TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 22,
+                                  color: Colors.white),
+                              timeTextStyle: TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 22,
+                                  color: Colors.white70),
+                              onStartChange: (start) {
+                                setState(() {
+                                  _startTime = start;
+                                });
+                              },
+                              onEndChange: (end) {
+                                setState(() {
+                                  _endTime = end;
+                                });
+                              },
+                            ),
+                          ],
+                        )),
+                    actions: <Widget>[
+                      CupertinoDialogAction(
+                          isDestructiveAction: true,
+                          child: Text('Cancel'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          }),
+                      CupertinoDialogAction(
+                        child: Text('Ok'),
+                        onPressed: () {
+                          Navigator.of(context).pop(TimeRange(
+                              startTime: _startTime, endTime: _endTime));
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+            child: Text("Cupertino style"))
       ]),
     );
   }
