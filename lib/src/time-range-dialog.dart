@@ -118,6 +118,9 @@ showTimeRangePicker({
   TransitionBuilder? builder,
   bool useRootNavigator = true,
   RouteSettings? routeSettings,
+
+  /// barrierDismissible false = user must tap button!
+  bool barrierDismissible = true,
 }) async {
   assert(debugCheckHasMaterialLocalizations(context));
 
@@ -159,11 +162,14 @@ showTimeRangePicker({
         use24HourFormat: use24HourFormat,
         clockRotation: clockRotation,
         maxDuration: maxDuration,
+        barrierDismissible: barrierDismissible,
       ));
 
   return await showDialog<TimeRange>(
     context: context,
     useRootNavigator: true,
+    barrierDismissible: barrierDismissible,
+    // user must tap button!
     builder: (BuildContext context) {
       return builder == null ? dialog : builder(context, dialog);
     },
@@ -221,6 +227,7 @@ class TimeRangePicker extends StatefulWidget {
   final bool use24HourFormat;
   final double clockRotation;
   final Duration? maxDuration;
+  final bool barrierDismissible;
 
   TimeRangePicker({
     Key? key,
@@ -260,6 +267,7 @@ class TimeRangePicker extends StatefulWidget {
     this.use24HourFormat = true,
     this.hideTimes = false,
     this.hideButtons = false,
+    this.barrierDismissible = true,
   })  : ticksLength = ticksLength == null ? strokeWidth : 12,
         super(key: key);
 

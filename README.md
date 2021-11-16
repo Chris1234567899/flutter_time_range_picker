@@ -134,5 +134,6 @@ class MyHomePage extends StatelessWidget {
 | bool                | hideTimes           | false                       | hide the time texts                                                             |     |
 | double              | clockRotation       | 0                           | rotate the clock around angle                                                   |
 | Duration            | maxDuration         | null                        | maximum Duration that can be picked                                             |     |
+| bool                | barrierDismissible  | true                        | barrierDismissible false = user must tap button to close time range picker      |     |
 
 
