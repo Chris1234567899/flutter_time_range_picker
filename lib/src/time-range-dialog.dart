@@ -162,7 +162,6 @@ showTimeRangePicker({
         use24HourFormat: use24HourFormat,
         clockRotation: clockRotation,
         maxDuration: maxDuration,
-        barrierDismissible: barrierDismissible,
       ));
 
   return await showDialog<TimeRange>(
@@ -227,7 +226,6 @@ class TimeRangePicker extends StatefulWidget {
   final bool use24HourFormat;
   final double clockRotation;
   final Duration? maxDuration;
-  final bool barrierDismissible;
 
   TimeRangePicker({
     Key? key,
@@ -267,7 +265,6 @@ class TimeRangePicker extends StatefulWidget {
     this.use24HourFormat = true,
     this.hideTimes = false,
     this.hideButtons = false,
-    this.barrierDismissible = true,
   })  : ticksLength = ticksLength == null ? strokeWidth : 12,
         super(key: key);
 
