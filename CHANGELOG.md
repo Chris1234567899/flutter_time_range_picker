@@ -31,3 +31,12 @@
 ## [2.0.1] - TODO: Add release date.
 
 * Fixed bug with default values
+
+
+## [2.1.0] - TODO: Add release date.
+
+* Fixed bug with max duration when using a disabled timeframe
+* Enhanced handler movement
+* Added parameter min duration (default 30 min)
+* Added examples for custom dialogs (including ios style)
+* Added some assertions to help avoiding errors during implementation

@@ -14,6 +14,12 @@ A time range picker for flutter.
       - [Filled Style](#filled-style)
       - [Disabled Timeframe](#disabled-timeframe)
       - [Background Widget](#background-widget)
+      - [Rotated Clock](#rotated-clock)
+      - [Max Duration](#max-duration)
+      - [Min Duration](#min-duration)
+      - [Default Widget](#default-widget)
+      - [Custom Dialog](#custom-dialog)
+      - [Custom Dialog iOS Style](#custom-dialog-ios-style)
     - [Parameters](#parameters)
 
 
@@ -95,6 +101,24 @@ class MyHomePage extends StatelessWidget {
 #### Background Widget
 ![Background Widget](./doc/background.gif)
 
+#### Rotated Clock
+![Rotated Clock](./doc/rotated.gif)
+
+#### Max Duration
+![Max Duration](./doc/max_duration.gif)
+
+#### Min Duration
+![Min Duration](./doc/min_duration.gif)
+
+#### Default Widget
+![Default Widget](./doc/widget.gif)
+
+#### Custom Dialog
+![Custom Dialog](./doc/custom_dialog.gif)
+
+#### Custom Dialog iOS Style
+![Custom Dialog iOS Style](./doc/custom_dialog_ios.gif)
+
 ### Parameters
 
 | type                | param               | default                     | description                                                                     |     |
@@ -134,5 +158,6 @@ class MyHomePage extends StatelessWidget {
 | bool                | hideTimes           | false                       | hide the time texts                                                             |     |
 | double              | clockRotation       | 0                           | rotate the clock around angle                                                   |
 | Duration            | maxDuration         | null                        | maximum Duration that can be picked                                             |     |
+| Duration            | minDuration         | Duration(minutes: 30)       | minimum Duration that can be picked                                             |     |
 
 

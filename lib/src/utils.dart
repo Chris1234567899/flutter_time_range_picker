@@ -15,9 +15,19 @@ double timeToAngle(TimeOfDay time, double offsetRad) {
   return normalizeAngle(angle + pi / 2 + offsetRad);
 }
 
-double standardizeToOffsetAngle(double angle, double offsetAngle) {
-  var stan = normalizeAngle(angle - offsetAngle);
-  return stan == 2 * pi ? 0 : stan;
+//
+
+//get signed Angle between two rad
+double signedAngle(double startAngle, double targetAngle) {
+  //return (startAngle - targetAngle).abs() % 360;
+  return atan2(sin(startAngle - targetAngle), cos(startAngle - targetAngle));
+}
+
+double durationToAngle(Duration duration) {
+  var min = duration.inMinutes;
+  var time = TimeOfDay(hour: min ~/ 60, minute: min % 60);
+
+  return signedAngle(timeToAngle(time, 0), pi / 2);
 }
 
 enum ActiveTime { Start, End }

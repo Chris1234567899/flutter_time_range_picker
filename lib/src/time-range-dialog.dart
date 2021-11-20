@@ -115,6 +115,7 @@ showTimeRangePicker({
 
   /// maximum selectable duration
   Duration? maxDuration,
+  Duration minDuration = const Duration(minutes: 30),
   TransitionBuilder? builder,
   bool useRootNavigator = true,
   RouteSettings? routeSettings,
@@ -159,6 +160,7 @@ showTimeRangePicker({
         use24HourFormat: use24HourFormat,
         clockRotation: clockRotation,
         maxDuration: maxDuration,
+        minDuration: minDuration,
       ));
 
   return await showDialog<TimeRange>(
@@ -221,6 +223,7 @@ class TimeRangePicker extends StatefulWidget {
   final bool use24HourFormat;
   final double clockRotation;
   final Duration? maxDuration;
+  final Duration minDuration;
 
   TimeRangePicker({
     Key? key,
@@ -257,10 +260,17 @@ class TimeRangePicker extends StatefulWidget {
     this.activeTimeTextStyle,
     this.clockRotation = 0,
     this.maxDuration,
+    this.minDuration = const Duration(minutes: 30),
     this.use24HourFormat = true,
     this.hideTimes = false,
     this.hideButtons = false,
   })  : ticksLength = ticksLength == null ? strokeWidth : 12,
+        assert(interval.inSeconds <= minDuration.inSeconds,
+            "interval must be smaller or same as min duration - adjust either one"),
+        assert(
+            interval.inSeconds < 24 * 60 * 60, "interval must be smaller 24h"),
+        assert(minDuration.inSeconds < 24 * 60 * 60,
+            " min duration must be smaller 24h"),
         super(key: key);
 
   @override
@@ -421,40 +431,137 @@ class _TimeRangePickerState extends State<TimeRangePicker>
     final touchPositionFromCenter = point - center;
     var dir = normalizeAngle(touchPositionFromCenter.direction);
 
-    //check disabled
-    if (widget.disabledTime != null) {
-      var disabledStanEnd =
-          standardizeToOffsetAngle(_disabledEndAngle!, _disabledStartAngle!);
-      var stanDir = standardizeToOffsetAngle(dir, _disabledStartAngle!);
+    var minDurationSigned = durationToAngle(widget.minDuration);
+    var minDurationAngle =
+        minDurationSigned < 0 ? 2 * pi + minDurationSigned : minDurationSigned;
+    //print("min duration angle " + (minDurationAngle * 180 / pi).toString());
+    if (_activeTime == ActiveTime.Start) {
+      var angleToEndSigned = signedAngle(_endAngle, dir);
+      var angleToEnd =
+          angleToEndSigned < 0 ? 2 * pi + angleToEndSigned : angleToEndSigned;
 
-      if (_activeTime == ActiveTime.Start) {
-        var stanEnd = standardizeToOffsetAngle(_endAngle, _disabledStartAngle!);
+      //check if hitting disabled
+      if (widget.disabledTime != null) {
+        var angleToDisabledStart = signedAngle(_disabledStartAngle!, dir);
+        var angleToDisabledEnd = signedAngle(_disabledEndAngle!, dir);
 
-        if (isBetweenAngle(0, disabledStanEnd, stanDir) ||
-            stanDir > stanEnd && stanEnd != 0) {
+        var disabledAngleSigned =
+            signedAngle(_disabledEndAngle!, _disabledStartAngle!);
+        var disabledDiff = disabledAngleSigned < 0
+            ? 2 * pi + disabledAngleSigned
+            : disabledAngleSigned;
+
+        //print("to disabled start " + (angleToDisabledStart * 180 / pi).toString());
+        // print("to disabled end " + (angleToDisabledEnd * 180 / pi).toString());
+
+        if (angleToDisabledStart - minDurationAngle < 0 &&
+            angleToDisabledStart > -disabledDiff / 2) {
+          dir = _disabledStartAngle! - minDurationAngle;
+          _updateTimeAndSnapAngle(ActiveTime.End, _disabledStartAngle!);
+        } else if (angleToDisabledEnd > 0 &&
+            angleToDisabledEnd < disabledDiff / 2) {
           dir = _disabledEndAngle!;
         }
-      } else {
-        var stanStart =
-            standardizeToOffsetAngle(_startAngle, _disabledStartAngle!);
+      }
 
-        if (isBetweenAngle(0, disabledStanEnd, stanDir) ||
-            stanDir < stanStart) {
+      // if after end time -> push end time ahead
+      if (angleToEnd > 0 && angleToEnd < minDurationAngle) {
+        var angle = dir + minDurationAngle;
+        _updateTimeAndSnapAngle(ActiveTime.End, angle);
+      }
+
+      //check end time
+      if (widget.maxDuration != null) {
+        var startSigned = signedAngle(_endAngle, dir);
+        var startDiff = startSigned < 0 ? 2 * pi + startSigned : startSigned;
+        var maxSigned = durationToAngle(widget.maxDuration!);
+        var maxDiff = maxSigned < 0 ? 2 * pi + maxSigned : maxSigned;
+        if (startDiff > maxDiff) {
+          var angle = dir + maxSigned;
+          _updateTimeAndSnapAngle(ActiveTime.End, angle);
+        }
+      }
+    } else {
+      var angleToStartSigned = signedAngle(dir, _startAngle);
+      var angleToStart = angleToStartSigned < 0
+          ? 2 * pi + angleToStartSigned
+          : angleToStartSigned;
+
+      //check if hitting disabled
+      if (widget.disabledTime != null) {
+        var angleToDisabledStart = signedAngle(_disabledStartAngle!, dir);
+        var angleToDisabledEnd = signedAngle(_disabledEndAngle!, dir);
+
+        var disabledAngleSigned =
+            signedAngle(_disabledEndAngle!, _disabledStartAngle!);
+        var disabledDiff = disabledAngleSigned < 0
+            ? 2 * pi + disabledAngleSigned
+            : disabledAngleSigned;
+
+        //print("to disabled start " + (angleToDisabledStart * 180 / pi).toString());
+        //print("to disabled end " + (angleToDisabledEnd * 180 / pi).toString());
+
+        //print("disabled diff " + (disabledDiff * 180 / pi).toString());
+
+        if (angleToDisabledStart < 0 &&
+            angleToDisabledStart > -disabledDiff / 2) {
           dir = _disabledStartAngle!;
+        } else if (angleToDisabledEnd + minDurationAngle > 0 &&
+            angleToDisabledEnd < disabledDiff / 2) {
+          dir = _disabledEndAngle! + minDurationAngle;
+          _updateTimeAndSnapAngle(ActiveTime.Start, _disabledEndAngle!);
+        }
+      }
+
+      // if before start time -> push start time ahead
+      if (angleToStart > 0 && angleToStart < minDurationAngle) {
+        var angle = dir - minDurationAngle;
+        _updateTimeAndSnapAngle(ActiveTime.Start, angle);
+      }
+
+      //check end time
+      if (widget.maxDuration != null) {
+        var endSigned = signedAngle(dir, _startAngle);
+        var endDiff = endSigned < 0 ? 2 * pi + endSigned : endSigned;
+        var maxSigned = durationToAngle(widget.maxDuration!);
+        var maxDiff = maxSigned < 0 ? 2 * pi + maxSigned : maxSigned;
+        if (endDiff > maxDiff) {
+          var angle = dir - maxSigned;
+          _updateTimeAndSnapAngle(ActiveTime.Start, angle);
         }
       }
     }
 
-    var time = _angleToTime(dir - _offsetRad);
+    _updateTimeAndSnapAngle(_activeTime!, dir);
+  }
+
+  _updateTimeAndSnapAngle(ActiveTime type, double angle) {
+    var time = _angleToTime(angle - _offsetRad);
 
     //24 => 0
     if (time.hour == 24) time = TimeOfDay(hour: 0, minute: time.minute);
 
     // snap to interval
-    final angle = widget.snap == true ? timeToAngle(time, -_offsetRad) : dir;
+    final snapped =
+        widget.snap == true ? timeToAngle(time, -_offsetRad) : angle;
 
-    _updateAngles(angle);
-    _updateTime(time);
+    if (type == ActiveTime.Start) {
+      setState(() {
+        _startAngle = snapped;
+        _startTime = time;
+      });
+      if (widget.onStartChange != null) {
+        widget.onStartChange!(_startTime);
+      }
+    } else {
+      setState(() {
+        _endAngle = snapped;
+        _endTime = time;
+      });
+      if (widget.onEndChange != null) {
+        widget.onEndChange!(_endTime);
+      }
+    }
   }
 
   bool isBetweenAngle(double min, double max, double targetAngle) {
@@ -471,67 +578,6 @@ class _TimeRangePickerState extends State<TimeRangePicker>
     setState(() {
       _activeTime = null;
     });
-  }
-
-  _updateAngles(double angle) {
-    setState(() {
-      if (_activeTime == ActiveTime.Start) {
-        _startAngle = angle;
-      } else
-        _endAngle = angle;
-    });
-  }
-
-  _updateTime(TimeOfDay time) {
-    if (_activeTime == ActiveTime.Start) {
-      setState(() {
-        _startTime = time;
-      });
-      if (widget.onStartChange != null) {
-        widget.onStartChange!(_startTime);
-      }
-    } else {
-      setState(() {
-        _endTime = time;
-      });
-      if (widget.onEndChange != null) {
-        widget.onEndChange!(_endTime);
-      }
-    }
-
-//check max duration
-    if (widget.maxDuration != null) {
-      var startMin = _startTime.hour * 60 + _startTime.minute;
-      var endMin = _endTime.hour * 60 + _endTime.minute;
-
-      //if endtime is on new day
-      if (endMin < startMin) endMin += 24 * 60;
-
-      var duration = Duration(minutes: endMin - startMin);
-      if (duration.inMinutes > widget.maxDuration!.inMinutes) {
-        if (_activeTime == ActiveTime.Start) {
-          var adjustedEndTime =
-              _roundMinutes(startMin + widget.maxDuration!.inMinutes * 1.0);
-          setState(() {
-            _endTime = adjustedEndTime;
-            _endAngle = timeToAngle(_endTime, _offsetRad);
-          });
-          if (widget.onEndChange != null) {
-            widget.onEndChange!(_endTime);
-          }
-        } else {
-          var adjustedEndTime =
-              _roundMinutes(endMin - widget.maxDuration!.inMinutes * 1.0);
-          setState(() {
-            _startTime = adjustedEndTime;
-            _startAngle = timeToAngle(_startTime, _offsetRad);
-          });
-          if (widget.onStartChange != null) {
-            widget.onStartChange!(_startTime);
-          }
-        }
-      }
-    }
   }
 
   _submit() {
@@ -685,7 +731,7 @@ class _TimeRangePickerState extends State<TimeRangePicker>
 
     Color activeColor;
     Color inactiveColor;
-    switch (themeData.primaryColorBrightness) {
+    switch (ThemeData.estimateBrightnessForColor(themeData.primaryColor)) {
       case Brightness.light:
         activeColor = Colors.black87;
         inactiveColor = Colors.black54;

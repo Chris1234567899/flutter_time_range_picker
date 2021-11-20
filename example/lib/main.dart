@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:time_range_picker/time_range_picker.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -81,7 +80,8 @@ class _MyHomePageState extends State<MyHomePage> {
               onEndChange: (end) {
                 print("end time " + end.toString());
               },
-              interval: Duration(minutes: 30),
+              interval: Duration(hours: 1),
+              minDuration: Duration(hours: 1),
               use24HourFormat: false,
               padding: 30,
               strokeWidth: 20,
@@ -94,11 +94,11 @@ class _MyHomePageState extends State<MyHomePage> {
               ticksColor: Colors.white,
               snap: true,
               labels: [
-                "12 pm",
+                "12 am",
                 "3 am",
                 "6 am",
                 "9 am",
-                "12 am",
+                "12 pm",
                 "3 pm",
                 "6 pm",
                 "9 pm"
@@ -141,11 +141,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 ticksLength: 15,
                 ticksColor: Colors.grey,
                 labels: [
-                  "12 pm",
+                  "12 am",
                   "3 am",
                   "6 am",
                   "9 am",
-                  "12 am",
+                  "12 pm",
                   "3 pm",
                   "6 pm",
                   "9 pm"
@@ -295,18 +295,52 @@ class _MyHomePageState extends State<MyHomePage> {
               padding: 55,
               start: TimeOfDay(hour: 12, minute: 0),
               end: TimeOfDay(hour: 18, minute: 0),
-              /* 
               disabledTime: TimeRange(
-                  startTime: TimeOfDay(hour: 4, minute: 0),
-                  endTime: TimeOfDay(hour: 10, minute: 0),
-                ),
-              */
-              maxDuration: Duration(hours: 4),
+                startTime: TimeOfDay(hour: 4, minute: 0),
+                endTime: TimeOfDay(hour: 10, minute: 0),
+              ),
+              maxDuration: Duration(hours: 6),
             );
 
             print("result " + result.toString());
           },
           child: Text("Max duration"),
+        ),
+        ElevatedButton(
+          onPressed: () async {
+            TimeRange? result = await showTimeRangePicker(
+              context: context,
+              rotateLabels: false,
+              ticks: 12,
+              ticksColor: Colors.grey,
+              ticksOffset: -12,
+              labels: [
+                "24 h",
+                "3 h",
+                "6 h",
+                "9 h",
+                "12 h",
+                "15 h",
+                "18 h",
+                "21 h"
+              ].asMap().entries.map((e) {
+                return ClockLabel.fromIndex(
+                    idx: e.key, length: 8, text: e.value);
+              }).toList(),
+              labelOffset: -30,
+              padding: 55,
+              start: TimeOfDay(hour: 12, minute: 0),
+              end: TimeOfDay(hour: 18, minute: 0),
+              disabledTime: TimeRange(
+                startTime: TimeOfDay(hour: 4, minute: 0),
+                endTime: TimeOfDay(hour: 10, minute: 0),
+              ),
+              minDuration: Duration(hours: 3),
+            );
+
+            print("result " + result.toString());
+          },
+          child: Text("Min duration"),
         ),
         Divider(),
         Text(
@@ -391,8 +425,8 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Text("Custom Dialog"),
         ),
         ElevatedButton(
-            onPressed: () {
-              showCupertinoDialog(
+            onPressed: () async {
+              TimeRange? result = await showCupertinoDialog(
                 barrierDismissible: true,
                 context: context,
                 builder: (BuildContext context) {
@@ -441,14 +475,16 @@ class _MyHomePageState extends State<MyHomePage> {
                       CupertinoDialogAction(
                         child: Text('Ok'),
                         onPressed: () {
-                          Navigator.of(context).pop(TimeRange(
-                              startTime: _startTime, endTime: _endTime));
+                          Navigator.of(context).pop(
+                            TimeRange(startTime: _startTime, endTime: _endTime),
+                          );
                         },
                       ),
                     ],
                   );
                 },
               );
+              print(result.toString());
             },
             child: Text("Cupertino style"))
       ]),
