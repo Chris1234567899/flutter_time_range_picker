@@ -264,6 +264,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   startTime: TimeOfDay(hour: 6, minute: 0),
                   endTime: TimeOfDay(hour: 10, minute: 0)),
               clockRotation: 180.0,
+              barrierDismissible: false,
             );
 
             print("result " + result.toString());

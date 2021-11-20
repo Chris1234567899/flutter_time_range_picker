@@ -159,5 +159,6 @@ class MyHomePage extends StatelessWidget {
 | double              | clockRotation       | 0                           | rotate the clock around angle                                                   |
 | Duration            | maxDuration         | null                        | maximum Duration that can be picked                                             |     |
 | Duration            | minDuration         | Duration(minutes: 30)       | minimum Duration that can be picked                                             |     |
+| bool                | barrierDismissible  | true                        | barrierDismissible false = user must tap button to close time range picker      |     |
 
 

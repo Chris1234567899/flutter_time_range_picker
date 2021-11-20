@@ -119,6 +119,9 @@ showTimeRangePicker({
   TransitionBuilder? builder,
   bool useRootNavigator = true,
   RouteSettings? routeSettings,
+
+  /// barrierDismissible false = user must tap button!
+  bool barrierDismissible = true,
 }) async {
   assert(debugCheckHasMaterialLocalizations(context));
 
@@ -166,6 +169,8 @@ showTimeRangePicker({
   return await showDialog<TimeRange>(
     context: context,
     useRootNavigator: true,
+    barrierDismissible: barrierDismissible,
+    // user must tap button!
     builder: (BuildContext context) {
       return builder == null ? dialog : builder(context, dialog);
     },
