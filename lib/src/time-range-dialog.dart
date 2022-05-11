@@ -5,7 +5,7 @@ import 'package:time_range_picker/src/clock-gesture-recognizer.dart';
 import 'package:time_range_picker/src/clock-painter.dart';
 import 'package:time_range_picker/src/utils.dart';
 
-showTimeRangePicker(
+Future<TimeRange?> showTimeRangePicker(
     {required BuildContext context,
 
     /// preselected start time
