@@ -734,7 +734,9 @@ class _TimeRangePickerState extends State<TimeRangePicker>
 
     return Container(
       clipBehavior: Clip.antiAlias,
-      color: backgroundColor,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+      ),
       padding: EdgeInsets.all(24),
       child: Flex(
         direction: landscape ? Axis.vertical : Axis.horizontal,
