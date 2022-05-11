@@ -5,124 +5,126 @@ import 'package:time_range_picker/src/clock-gesture-recognizer.dart';
 import 'package:time_range_picker/src/clock-painter.dart';
 import 'package:time_range_picker/src/utils.dart';
 
-showTimeRangePicker({
-  required BuildContext context,
+showTimeRangePicker(
+    {required BuildContext context,
 
-  /// preselected start time
-  TimeOfDay? start,
+    /// preselected start time
+    TimeOfDay? start,
 
-  /// preselected end time
-  TimeOfDay? end,
+    /// preselected end time
+    TimeOfDay? end,
 
-  /// disabled time range (this time cannot be selected)
-  TimeRange? disabledTime,
+    /// disabled time range (this time cannot be selected)
+    TimeRange? disabledTime,
 
-  /// the color for the disabled section
-  Color? disabledColor,
+    /// the color for the disabled section
+    Color? disabledColor,
 
-  /// Style of the arc (filled or stroke)
-  PaintingStyle paintingStyle = PaintingStyle.stroke,
+    /// Style of the arc (filled or stroke)
+    PaintingStyle paintingStyle = PaintingStyle.stroke,
 
-  /// if start time changed
-  void Function(TimeOfDay)? onStartChange,
+    /// if start time changed
+    void Function(TimeOfDay)? onStartChange,
 
-  /// if end time changed
-  void Function(TimeOfDay)? onEndChange,
+    /// if end time changed
+    void Function(TimeOfDay)? onEndChange,
 
-  /// Minimum time steps that can be selected
-  Duration interval = const Duration(minutes: 5),
+    /// Minimum time steps that can be selected
+    Duration interval = const Duration(minutes: 5),
 
-  /// label for start time
-  String fromText = "From",
+    /// label for start time
+    String fromText = "From",
 
-  /// label for end time
-  String toText = "To",
+    /// label for end time
+    String toText = "To",
 
-  /// use 24 hours or am / pm
-  bool use24HourFormat = true,
+    /// use 24 hours or am / pm
+    bool use24HourFormat = true,
 
-  /// the padding of the ring
-  double padding = 36,
+    /// the padding of the ring
+    double padding = 36,
 
-  /// the thickness of the ring
-  double strokeWidth = 12,
+    /// the thickness of the ring
+    double strokeWidth = 12,
 
-  /// the color of the active arc from start time to end time
-  Color? strokeColor,
+    /// the color of the active arc from start time to end time
+    Color? strokeColor,
 
-  /// the radius of the handler to drag the arc
-  double handlerRadius = 12,
+    /// the radius of the handler to drag the arc
+    double handlerRadius = 12,
 
-  /// the color of a  handler
-  Color? handlerColor,
+    /// the color of a  handler
+    Color? handlerColor,
 
-  /// the color of a selected handler
-  Color? selectedColor,
+    /// the color of a selected handler
+    Color? selectedColor,
 
-  /// the color of the circle outline
-  Color? backgroundColor,
+    /// the color of the circle outline
+    Color? backgroundColor,
 
-  /// a widget displayed in the background, use e.g. an image
-  Widget? backgroundWidget,
+    /// a widget displayed in the background, use e.g. an image
+    Widget? backgroundWidget,
 
-  /// number of ticks displayed
-  int ticks = 0,
+    /// number of ticks displayed
+    int ticks = 0,
 
-  /// the offset for ticks
-  double ticksOffset = 0,
+    /// the offset for ticks
+    double ticksOffset = 0,
 
-  /// ticks length
-  double? ticksLength,
+    /// ticks length
+    double? ticksLength,
 
-  /// ticks thickness
-  double ticksWidth = 1,
+    /// ticks thickness
+    double ticksWidth = 1,
 
-  /// Color of ticks
-  Color ticksColor = Colors.white,
+    /// Color of ticks
+    Color ticksColor = Colors.white,
 
-  /// Snap time bar to interval
-  bool snap = false,
+    /// Snap time bar to interval
+    bool snap = false,
 
-  /// Show labels around the circle (start at 0 hours)
-  List<ClockLabel>? labels,
+    /// Show labels around the circle (start at 0 hours)
+    List<ClockLabel>? labels,
 
-  /// Offset of the labels
-  double labelOffset = 20,
+    /// Offset of the labels
+    double labelOffset = 20,
 
-  /// rotate labels
-  bool rotateLabels = true,
+    /// rotate labels
+    bool rotateLabels = true,
 
-  /// flip labels if the angle woulb be upside down (only if rotate labels is active)
-  bool autoAdjustLabels = true,
+    /// flip labels if the angle woulb be upside down (only if rotate labels is active)
+    bool autoAdjustLabels = true,
 
-  /// Style of the labels
-  TextStyle? labelStyle,
+    /// Style of the labels
+    TextStyle? labelStyle,
 
-  /// TextStyle of the time texts
-  TextStyle? timeTextStyle,
+    /// TextStyle of the time texts
+    TextStyle? timeTextStyle,
 
-  /// TextStyle of the currently moving time text
-  TextStyle? activeTimeTextStyle,
+    /// TextStyle of the currently moving time text
+    TextStyle? activeTimeTextStyle,
 
-  /// hide the time texts
-  bool hideTimes = false,
+    /// hide the time texts
+    bool hideTimes = false,
 
-  /// hide the button bar
-  bool hideButtons = false,
+    /// hide the button bar
+    bool hideButtons = false,
 
-  /// rotate the clock by angle
-  double clockRotation = 0,
+    /// rotate the clock by angle
+    double clockRotation = 0,
 
-  /// maximum selectable duration
-  Duration? maxDuration,
-  Duration minDuration = const Duration(minutes: 30),
-  TransitionBuilder? builder,
-  bool useRootNavigator = true,
-  RouteSettings? routeSettings,
+    /// maximum selectable duration
+    Duration? maxDuration,
+    Duration minDuration = const Duration(minutes: 30),
+    TransitionBuilder? builder,
+    bool useRootNavigator = true,
+    RouteSettings? routeSettings,
 
-  /// barrierDismissible false = user must tap button!
-  bool barrierDismissible = true,
-}) async {
+    /// barrierDismissible false = user must tap button!
+    bool barrierDismissible = true,
+
+    /// Changes the header's background color
+    Color? headerBackgroundColor}) async {
   assert(debugCheckHasMaterialLocalizations(context));
 
   final Widget dialog = Dialog(
@@ -229,7 +231,7 @@ class TimeRangePicker extends StatefulWidget {
   final double clockRotation;
   final Duration? maxDuration;
   final Duration minDuration;
-
+  final Color? headerBackgroundColor;
   TimeRangePicker({
     Key? key,
     this.start,
@@ -269,6 +271,7 @@ class TimeRangePicker extends StatefulWidget {
     this.use24HourFormat = true,
     this.hideTimes = false,
     this.hideButtons = false,
+    this.headerBackgroundColor,
   })  : ticksLength = ticksLength == null ? strokeWidth : 12,
         assert(interval.inSeconds <= minDuration.inSeconds,
             "interval must be smaller or same as min duration - adjust either one"),
@@ -724,16 +727,8 @@ class _TimeRangePickerState extends State<TimeRangePicker>
   Widget buildHeader(bool landscape) {
     final ThemeData themeData = Theme.of(context);
 
-    Color backgroundColor;
-    switch (themeData.brightness) {
-      case Brightness.light:
-        backgroundColor = themeData.primaryColor;
-        break;
-      case Brightness.dark:
-        backgroundColor = themeData.backgroundColor;
-        break;
-    }
-
+    Color backgroundColor =
+        widget.headerBackgroundColor ?? themeData.colorScheme.primary;
     Color activeColor;
     Color inactiveColor;
     switch (ThemeData.estimateBrightnessForColor(themeData.primaryColor)) {
