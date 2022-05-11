@@ -729,20 +729,11 @@ class _TimeRangePickerState extends State<TimeRangePicker>
 
     Color backgroundColor =
         widget.headerBackgroundColor ?? themeData.colorScheme.primary;
-    Color activeColor;
-    Color inactiveColor;
-    switch (ThemeData.estimateBrightnessForColor(themeData.primaryColor)) {
-      case Brightness.light:
-        activeColor = Colors.black87;
-        inactiveColor = Colors.black54;
-        break;
-      case Brightness.dark:
-        activeColor = Colors.white;
-        inactiveColor = Colors.white70;
-        break;
-    }
+
+    final onPrimary = themeData.colorScheme.onPrimary;
 
     return Container(
+      clipBehavior: Clip.antiAlias,
       color: backgroundColor,
       padding: EdgeInsets.all(24),
       child: Flex(
@@ -751,38 +742,38 @@ class _TimeRangePickerState extends State<TimeRangePicker>
         children: [
           Column(
             children: [
-              Text(widget.fromText, style: TextStyle(color: activeColor)),
+              Text(widget.fromText, style: TextStyle(color: onPrimary)),
               Text(
                 MaterialLocalizations.of(context).formatTimeOfDay(_startTime,
                     alwaysUse24HourFormat: widget.use24HourFormat),
                 style: _activeTime == ActiveTime.Start
                     ? widget.activeTimeTextStyle ??
                         TextStyle(
-                            color: activeColor,
+                            color: onPrimary,
                             fontSize: 28,
                             fontWeight: FontWeight.bold)
                     : widget.timeTextStyle ??
                         TextStyle(
-                            color: inactiveColor,
+                            color: onPrimary,
                             fontSize: 28,
                             fontWeight: FontWeight.bold),
               ),
             ],
           ),
           Column(children: [
-            Text(widget.toText, style: TextStyle(color: activeColor)),
+            Text(widget.toText, style: TextStyle(color: onPrimary)),
             Text(
               MaterialLocalizations.of(context).formatTimeOfDay(_endTime,
                   alwaysUse24HourFormat: widget.use24HourFormat),
               style: _activeTime == ActiveTime.End
                   ? widget.activeTimeTextStyle ??
                       TextStyle(
-                          color: activeColor,
+                          color: onPrimary,
                           fontSize: 28,
                           fontWeight: FontWeight.bold)
                   : widget.timeTextStyle ??
                       TextStyle(
-                          color: inactiveColor,
+                          color: onPrimary,
                           fontSize: 28,
                           fontWeight: FontWeight.bold),
             ),
