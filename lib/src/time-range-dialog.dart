@@ -306,7 +306,7 @@ class _TimeRangePickerState extends State<TimeRangePicker>
   void initState() {
     _offsetRad = (widget.clockRotation * pi / 180);
 
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     var startTime = widget.start ?? TimeOfDay.now();
     var endTime = widget.end ??
         startTime.replacing(
@@ -334,21 +334,21 @@ class _TimeRangePickerState extends State<TimeRangePicker>
           timeToAngle(widget.disabledTime!.startTime, _offsetRad);
       _disabledEndAngle = timeToAngle(widget.disabledTime!.endTime, _offsetRad);
     }
-    WidgetsBinding.instance!.addPostFrameCallback((_) => setRadius());
+    WidgetsBinding.instance.addPostFrameCallback((_) => setRadius());
 
     super.initState();
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
   @override
   void didChangeMetrics() {
     super.didChangeMetrics();
-    WidgetsBinding.instance!.addPostFrameCallback((_) => setRadius());
+    WidgetsBinding.instance.addPostFrameCallback((_) => setRadius());
   }
 
   setRadius() {
