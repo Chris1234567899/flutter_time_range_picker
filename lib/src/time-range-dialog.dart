@@ -279,10 +279,10 @@ class TimeRangePicker extends StatefulWidget {
         super(key: key);
 
   @override
-  _TimeRangePickerState createState() => _TimeRangePickerState();
+  TimeRangePickerState createState() => TimeRangePickerState();
 }
 
-class _TimeRangePickerState extends State<TimeRangePicker>
+class TimeRangePickerState extends State<TimeRangePicker>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   ActiveTime? _activeTime;
   double _startAngle = 0;
@@ -304,33 +304,7 @@ class _TimeRangePickerState extends State<TimeRangePicker>
     _offsetRad = (widget.clockRotation * pi / 180);
 
     WidgetsBinding.instance.addObserver(this);
-    var startTime = widget.start ?? TimeOfDay.now();
-    var endTime = widget.end ??
-        startTime.replacing(
-            hour:
-                startTime.hour < 21 ? startTime.hour + 3 : startTime.hour - 21);
-
-    _startTime = _roundMinutes(startTime.hour * 60 + startTime.minute * 1.0);
-    _startAngle = timeToAngle(_startTime, _offsetRad);
-    _endTime = _roundMinutes(endTime.hour * 60 + endTime.minute * 1.0);
-
-    if (widget.maxDuration != null) {
-      var startDate = DateTime(2020, 1, 1, _startTime.hour, _startTime.minute);
-      var endDate = DateTime(2020, 1, 1, _endTime.hour, _endTime.minute);
-      var duration = endDate.difference(startDate);
-      if (duration.inMinutes > widget.maxDuration!.inMinutes) {
-        var maxDate = startDate.add(widget.maxDuration!);
-        _endTime = TimeOfDay(hour: maxDate.hour, minute: maxDate.minute);
-      }
-    }
-
-    _endAngle = timeToAngle(_endTime, _offsetRad);
-
-    if (widget.disabledTime != null) {
-      _disabledStartAngle =
-          timeToAngle(widget.disabledTime!.startTime, _offsetRad);
-      _disabledEndAngle = timeToAngle(widget.disabledTime!.endTime, _offsetRad);
-    }
+    setAngles();
     WidgetsBinding.instance.addPostFrameCallback((_) => setRadius());
 
     super.initState();
@@ -357,6 +331,41 @@ class _TimeRangePickerState extends State<TimeRangePicker>
             min(wrapper.size.width, wrapper.size.height) / 2 - (widget.padding);
       });
     }
+  }
+
+  void setAngles() {
+    setState(() {
+      var startTime = widget.start ?? TimeOfDay.now();
+      var endTime = widget.end ??
+          startTime.replacing(
+              hour: startTime.hour < 21
+                  ? startTime.hour + 3
+                  : startTime.hour - 21);
+
+      _startTime = _roundMinutes(startTime.hour * 60 + startTime.minute * 1.0);
+      _startAngle = timeToAngle(_startTime, _offsetRad);
+      _endTime = _roundMinutes(endTime.hour * 60 + endTime.minute * 1.0);
+
+      if (widget.maxDuration != null) {
+        var startDate =
+            DateTime(2020, 1, 1, _startTime.hour, _startTime.minute);
+        var endDate = DateTime(2020, 1, 1, _endTime.hour, _endTime.minute);
+        var duration = endDate.difference(startDate);
+        if (duration.inMinutes > widget.maxDuration!.inMinutes) {
+          var maxDate = startDate.add(widget.maxDuration!);
+          _endTime = TimeOfDay(hour: maxDate.hour, minute: maxDate.minute);
+        }
+      }
+
+      _endAngle = timeToAngle(_endTime, _offsetRad);
+
+      if (widget.disabledTime != null) {
+        _disabledStartAngle =
+            timeToAngle(widget.disabledTime!.startTime, _offsetRad);
+        _disabledEndAngle =
+            timeToAngle(widget.disabledTime!.endTime, _offsetRad);
+      }
+    });
   }
 
   TimeOfDay _angleToTime(double angle) {
