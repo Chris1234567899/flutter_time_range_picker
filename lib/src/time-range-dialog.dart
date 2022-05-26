@@ -128,6 +128,7 @@ Future<TimeRange?> showTimeRangePicker(
   assert(debugCheckHasMaterialLocalizations(context));
 
   final Widget dialog = Dialog(
+      clipBehavior: Clip.antiAlias,
       elevation: 12,
       child: TimeRangePicker(
         start: start,
