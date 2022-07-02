@@ -51,6 +51,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  TimeOfDay _startTime = TimeOfDay.now();
+  TimeOfDay _endTime =
+      TimeOfDay.fromDateTime(DateTime.now().add(const Duration(hours: 3)));
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -381,8 +385,17 @@ class _MyHomePageState extends State<MyHomePage> {
           style: Theme.of(context).textTheme.headline6,
           textAlign: TextAlign.center,
         ),
-        Container(
-          padding: const EdgeInsets.all(20),
+        const SizedBox(
+          height: 20,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Text("Start: ${_startTime.format(context)}"),
+            Text("End: ${_endTime.format(context)}"),
+          ],
+        ),
+        SizedBox(
           height: 400,
           child: TimeRangePicker(
             hideButtons: true,
@@ -396,17 +409,23 @@ class _MyHomePageState extends State<MyHomePage> {
               ClockLabel.fromTime(
                   time: const TimeOfDay(hour: 18, minute: 0), text: "Go Home")
             ],
-            start: const TimeOfDay(hour: 10, minute: 0),
-            end: const TimeOfDay(hour: 13, minute: 0),
+            start: _startTime,
+            end: _endTime,
             ticks: 8,
             strokeColor: Theme.of(context).primaryColor.withOpacity(0.5),
             ticksColor: Theme.of(context).primaryColor,
             labelOffset: 15,
             padding: 60,
-            disabledTime: TimeRange(
-                startTime: const TimeOfDay(hour: 18, minute: 0),
-                endTime: const TimeOfDay(hour: 7, minute: 0)),
-            disabledColor: Colors.red.withOpacity(0.5),
+            onStartChange: (start) {
+              setState(() {
+                _startTime = start;
+              });
+            },
+            onEndChange: (end) {
+              setState(() {
+                _endTime = end;
+              });
+            },
           ),
         ),
         ElevatedButton(
