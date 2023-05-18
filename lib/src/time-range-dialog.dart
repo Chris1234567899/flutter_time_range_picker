@@ -403,10 +403,9 @@ class TimeRangePickerState extends State<TimeRangePicker>
 
     Offset globalStartOffset =
         circle.localToGlobal(_clockPainter.startHandlerPosition);
-    if (globalPoint.dx < globalStartOffset.dx + snap &&
-        globalPoint.dx > globalStartOffset.dx - snap &&
-        globalPoint.dy < globalStartOffset.dy + snap &&
-        globalPoint.dy > globalStartOffset.dy - snap) {
+    double startDistance = (globalPoint - globalStartOffset).distance;
+
+    if (startDistance < snap) {
       setState(() {
         _activeTime = ActiveTime.Start;
       });
@@ -422,11 +421,9 @@ class TimeRangePickerState extends State<TimeRangePicker>
 
     Offset globalEndOffset =
         circle.localToGlobal(_clockPainter.endHandlerPosition);
+    double endDistance = (globalPoint - globalEndOffset).distance;
 
-    if (globalPoint.dx < globalEndOffset.dx + snap &&
-        globalPoint.dx > globalEndOffset.dx - snap &&
-        globalPoint.dy < globalEndOffset.dy + snap &&
-        globalPoint.dy > globalEndOffset.dy - snap) {
+    if (endDistance < snap && endDistance < startDistance) {
       setState(() {
         _activeTime = ActiveTime.End;
       });
