@@ -443,14 +443,16 @@ class TimeRangePickerState extends State<TimeRangePicker>
     var dir = normalizeAngle(touchPositionFromCenter.direction);
 
     var minDurationSigned = durationToAngle(widget.minDuration);
-    var minDurationAngle =
-        minDurationSigned < 0 ? 2 * pi + minDurationSigned : minDurationSigned;
+    var minDurationAngle = normalizeAngle(minDurationSigned);
+
+    var angleToStartSigned = signedAngle(dir, _startAngle);
+    var angleToStart = normalizeAngle(angleToStartSigned);
+
+    var angleToEndSigned = signedAngle(_endAngle, dir);
+    var angleToEnd = normalizeAngle(angleToEndSigned);
+
     //print("min duration angle " + (minDurationAngle * 180 / pi).toString());
     if (_activeTime == ActiveTime.Start) {
-      var angleToEndSigned = signedAngle(_endAngle, dir);
-      var angleToEnd =
-          angleToEndSigned < 0 ? 2 * pi + angleToEndSigned : angleToEndSigned;
-
       //check if hitting disabled
       if (widget.disabledTime != null) {
         var angleToDisabledStart = signedAngle(_disabledStartAngle!, dir);
@@ -476,7 +478,8 @@ class TimeRangePickerState extends State<TimeRangePicker>
       }
 
       // if after end time -> push end time ahead
-      if (angleToEnd > 0 && angleToEnd < minDurationAngle) {
+      if ((angleToEndSigned < 0 && angleToStartSigned > 0) ||
+          angleToEnd < minDurationAngle) {
         var angle = dir + minDurationAngle;
         _updateTimeAndSnapAngle(ActiveTime.End, angle);
       }
@@ -493,11 +496,6 @@ class TimeRangePickerState extends State<TimeRangePicker>
         }
       }
     } else {
-      var angleToStartSigned = signedAngle(dir, _startAngle);
-      var angleToStart = angleToStartSigned < 0
-          ? 2 * pi + angleToStartSigned
-          : angleToStartSigned;
-
       //check if hitting disabled
       if (widget.disabledTime != null) {
         var angleToDisabledStart = signedAngle(_disabledStartAngle!, dir);
@@ -525,7 +523,8 @@ class TimeRangePickerState extends State<TimeRangePicker>
       }
 
       // if before start time -> push start time ahead
-      if (angleToStart > 0 && angleToStart < minDurationAngle) {
+      if ((angleToStartSigned < 0 && angleToEndSigned > 0) ||
+          angleToStart < minDurationAngle) {
         var angle = dir - minDurationAngle;
         _updateTimeAndSnapAngle(ActiveTime.Start, angle);
       }
