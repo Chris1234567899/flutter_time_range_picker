@@ -451,7 +451,6 @@ class TimeRangePickerState extends State<TimeRangePicker>
     var angleToEndSigned = signedAngle(_endAngle, dir);
     var angleToEnd = normalizeAngle(angleToEndSigned);
 
-    //print("min duration angle " + (minDurationAngle * 180 / pi).toString());
     if (_activeTime == ActiveTime.Start) {
       //check if hitting disabled
       if (widget.disabledTime != null) {
@@ -460,12 +459,7 @@ class TimeRangePickerState extends State<TimeRangePicker>
 
         var disabledAngleSigned =
             signedAngle(_disabledEndAngle!, _disabledStartAngle!);
-        var disabledDiff = disabledAngleSigned < 0
-            ? 2 * pi + disabledAngleSigned
-            : disabledAngleSigned;
-
-        //print("to disabled start " + (angleToDisabledStart * 180 / pi).toString());
-        // print("to disabled end " + (angleToDisabledEnd * 180 / pi).toString());
+        var disabledDiff = normalizeAngle(disabledAngleSigned);
 
         if (angleToDisabledStart - minDurationAngle < 0 &&
             angleToDisabledStart > -disabledDiff / 2) {
@@ -487,9 +481,9 @@ class TimeRangePickerState extends State<TimeRangePicker>
       //check end time
       if (widget.maxDuration != null) {
         var startSigned = signedAngle(_endAngle, dir);
-        var startDiff = startSigned < 0 ? 2 * pi + startSigned : startSigned;
+        var startDiff = normalizeAngle(startSigned);
         var maxSigned = durationToAngle(widget.maxDuration!);
-        var maxDiff = maxSigned < 0 ? 2 * pi + maxSigned : maxSigned;
+        var maxDiff = normalizeAngle(maxSigned);
         if (startDiff > maxDiff) {
           var angle = dir + maxSigned;
           _updateTimeAndSnapAngle(ActiveTime.End, angle);
@@ -503,14 +497,7 @@ class TimeRangePickerState extends State<TimeRangePicker>
 
         var disabledAngleSigned =
             signedAngle(_disabledEndAngle!, _disabledStartAngle!);
-        var disabledDiff = disabledAngleSigned < 0
-            ? 2 * pi + disabledAngleSigned
-            : disabledAngleSigned;
-
-        //print("to disabled start " + (angleToDisabledStart * 180 / pi).toString());
-        //print("to disabled end " + (angleToDisabledEnd * 180 / pi).toString());
-
-        //print("disabled diff " + (disabledDiff * 180 / pi).toString());
+        var disabledDiff = normalizeAngle(disabledAngleSigned);
 
         if (angleToDisabledStart < 0 &&
             angleToDisabledStart > -disabledDiff / 2) {
@@ -532,9 +519,9 @@ class TimeRangePickerState extends State<TimeRangePicker>
       //check end time
       if (widget.maxDuration != null) {
         var endSigned = signedAngle(dir, _startAngle);
-        var endDiff = endSigned < 0 ? 2 * pi + endSigned : endSigned;
+        var endDiff = normalizeAngle(endSigned);
         var maxSigned = durationToAngle(widget.maxDuration!);
-        var maxDiff = maxSigned < 0 ? 2 * pi + maxSigned : maxSigned;
+        var maxDiff = normalizeAngle(maxSigned);
         if (endDiff > maxDiff) {
           var angle = dir - maxSigned;
           _updateTimeAndSnapAngle(ActiveTime.Start, angle);
@@ -575,10 +562,9 @@ class TimeRangePickerState extends State<TimeRangePicker>
   }
 
   bool isBetweenAngle(double min, double max, double targetAngle) {
-    var normalisedMin = min >= 0 ? min : 2 * pi + min;
-    var normalisedMax = max >= 0 ? max : 2 * pi + max;
-    var normalisedTarget =
-        targetAngle >= 0 ? targetAngle : 2 * pi + targetAngle;
+    var normalisedMin = normalizeAngle(min);
+    var normalisedMax = normalizeAngle(max);
+    var normalisedTarget = normalizeAngle(targetAngle);
 
     return normalisedMin <= normalisedTarget &&
         normalisedTarget <= normalisedMax;
