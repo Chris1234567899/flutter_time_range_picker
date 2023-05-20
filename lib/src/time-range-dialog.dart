@@ -472,7 +472,8 @@ class TimeRangePickerState extends State<TimeRangePicker>
       }
 
       // if after end time -> push end time ahead
-      if ((angleToEndSigned < 0 && angleToStartSigned > 0) ||
+      if ((angleToStartSigned > 0 &&
+              angleToEndSigned.abs() < angleToStartSigned) ||
           angleToEnd < minDurationAngle) {
         var angle = dir + minDurationAngle;
         _updateTimeAndSnapAngle(ActiveTime.End, angle);
@@ -510,7 +511,8 @@ class TimeRangePickerState extends State<TimeRangePicker>
       }
 
       // if before start time -> push start time ahead
-      if ((angleToStartSigned < 0 && angleToEndSigned > 0) ||
+      if ((angleToEndSigned > 0 &&
+              angleToStartSigned.abs() < angleToEndSigned) ||
           angleToStart < minDurationAngle) {
         var angle = dir - minDurationAngle;
         _updateTimeAndSnapAngle(ActiveTime.Start, angle);
