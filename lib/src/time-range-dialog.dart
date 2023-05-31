@@ -759,6 +759,7 @@ class TimeRangePickerState extends State<TimeRangePicker>
     return Container(
       color: backgroundColor,
       padding: EdgeInsets.all(24),
+      margin: EdgeInsets.only(bottom: 24),
       child: Flex(
         direction: landscape ? Axis.vertical : Axis.horizontal,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
