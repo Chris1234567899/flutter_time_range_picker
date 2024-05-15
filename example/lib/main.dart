@@ -382,7 +382,7 @@ class _MyHomePageState extends State<MyHomePage> {
         const Divider(),
         Text(
           'As a regular widget:',
-          style: Theme.of(context).textTheme.headline6,
+          style: Theme.of(context).textTheme.titleLarge,
           textAlign: TextAlign.center,
         ),
         const SizedBox(

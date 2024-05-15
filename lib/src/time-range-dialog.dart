@@ -718,7 +718,7 @@ class TimeRangePickerState extends State<TimeRangePicker>
                     ticksOffset: widget.ticksOffset,
                     labels: widget.labels ?? new List.empty(),
                     labelStyle:
-                        widget.labelStyle ?? themeData.textTheme.bodyText1,
+                        widget.labelStyle ?? themeData.textTheme.bodyLarge,
                     labelOffset: widget.labelOffset,
                     rotateLabels: widget.rotateLabels,
                     autoAdjustLabels: widget.autoAdjustLabels,
@@ -739,7 +739,7 @@ class TimeRangePickerState extends State<TimeRangePicker>
         backgroundColor = themeData.primaryColor;
         break;
       case Brightness.dark:
-        backgroundColor = themeData.backgroundColor;
+        backgroundColor = themeData.colorScheme.surface;
         break;
     }
 
