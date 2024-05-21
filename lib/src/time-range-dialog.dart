@@ -127,6 +127,7 @@ showTimeRangePicker({
 
   final Widget dialog = Dialog(
       elevation: 12,
+      clipBehavior: Clip.antiAlias,
       child: TimeRangePicker(
         start: start,
         end: end,
