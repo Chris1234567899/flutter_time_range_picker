@@ -40,3 +40,6 @@
 * Added parameter min duration (default 30 min)
 * Added examples for custom dialogs (including ios style)
 * Added some assertions to help avoiding errors during implementation
+
+## [2.3.0] - TODO: Add release date.
+* Fixed minor compability issues with Flutter 3
