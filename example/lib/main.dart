@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:time_range_picker/time_range_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:time_range_picker/time_range_picker.dart';
 
 void main() {
   runApp(MyApp());
@@ -93,24 +93,14 @@ class _MyHomePageState extends State<MyHomePage> {
               ticks: 12,
               ticksColor: Colors.white,
               snap: true,
-              labels: [
-                "12 am",
-                "3 am",
-                "6 am",
-                "9 am",
-                "12 pm",
-                "3 pm",
-                "6 pm",
-                "9 pm"
-              ].asMap().entries.map((e) {
-                return ClockLabel.fromIndex(
-                    idx: e.key, length: 8, text: e.value);
+              labels: ["12 am", "3 am", "6 am", "9 am", "12 pm", "3 pm", "6 pm", "9 pm"]
+                  .asMap()
+                  .entries
+                  .map((e) {
+                return ClockLabel.fromIndex(idx: e.key, length: 8, text: e.value);
               }).toList(),
               labelOffset: -30,
-              labelStyle: TextStyle(
-                  fontSize: 22,
-                  color: Colors.grey,
-                  fontWeight: FontWeight.bold),
+              labelStyle: TextStyle(fontSize: 22, color: Colors.grey, fontWeight: FontWeight.bold),
               timeTextStyle: TextStyle(
                   color: Colors.orange[700],
                   fontSize: 24,
@@ -140,18 +130,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 ticksOffset: -7,
                 ticksLength: 15,
                 ticksColor: Colors.grey,
-                labels: [
-                  "12 am",
-                  "3 am",
-                  "6 am",
-                  "9 am",
-                  "12 pm",
-                  "3 pm",
-                  "6 pm",
-                  "9 pm"
-                ].asMap().entries.map((e) {
-                  return ClockLabel.fromIndex(
-                      idx: e.key, length: 8, text: e.value);
+                labels: ["12 am", "3 am", "6 am", "9 am", "12 pm", "3 pm", "6 pm", "9 pm"]
+                    .asMap()
+                    .entries
+                    .map((e) {
+                  return ClockLabel.fromIndex(idx: e.key, length: 8, text: e.value);
                 }).toList(),
                 labelOffset: 35,
                 rotateLabels: false,
@@ -168,10 +151,8 @@ class _MyHomePageState extends State<MyHomePage> {
               paintingStyle: PaintingStyle.fill,
               backgroundColor: Colors.grey.withOpacity(0.2),
               labels: [
-                ClockLabel.fromTime(
-                    time: TimeOfDay(hour: 7, minute: 0), text: "Start Work"),
-                ClockLabel.fromTime(
-                    time: TimeOfDay(hour: 18, minute: 0), text: "Go Home")
+                ClockLabel.fromTime(time: TimeOfDay(hour: 7, minute: 0), text: "Start Work"),
+                ClockLabel.fromTime(time: TimeOfDay(hour: 18, minute: 0), text: "Go Home")
               ],
               start: TimeOfDay(hour: 10, minute: 0),
               end: TimeOfDay(hour: 13, minute: 0),
@@ -205,21 +186,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 width: 200,
               ),
               labels: [
-                ClockLabel.fromTime(
-                    time: TimeOfDay(hour: 6, minute: 0), text: "Get up"),
-                ClockLabel.fromTime(
-                    time: TimeOfDay(hour: 9, minute: 0), text: "Coffee time"),
-                ClockLabel.fromTime(
-                    time: TimeOfDay(hour: 15, minute: 0), text: "Afternoon"),
-                ClockLabel.fromTime(
-                    time: TimeOfDay(hour: 18, minute: 0),
-                    text: "Time for a beer"),
-                ClockLabel.fromTime(
-                    time: TimeOfDay(hour: 22, minute: 0), text: "Go to Sleep"),
-                ClockLabel.fromTime(
-                    time: TimeOfDay(hour: 2, minute: 0), text: "Go for a pee"),
-                ClockLabel.fromTime(
-                    time: TimeOfDay(hour: 12, minute: 0), text: "Lunchtime!")
+                ClockLabel.fromTime(time: TimeOfDay(hour: 6, minute: 0), text: "Get up"),
+                ClockLabel.fromTime(time: TimeOfDay(hour: 9, minute: 0), text: "Coffee time"),
+                ClockLabel.fromTime(time: TimeOfDay(hour: 15, minute: 0), text: "Afternoon"),
+                ClockLabel.fromTime(time: TimeOfDay(hour: 18, minute: 0), text: "Time for a beer"),
+                ClockLabel.fromTime(time: TimeOfDay(hour: 22, minute: 0), text: "Go to Sleep"),
+                ClockLabel.fromTime(time: TimeOfDay(hour: 2, minute: 0), text: "Go for a pee"),
+                ClockLabel.fromTime(time: TimeOfDay(hour: 12, minute: 0), text: "Lunchtime!")
               ],
               ticksColor: Colors.black,
               labelOffset: 40,
@@ -242,18 +215,11 @@ class _MyHomePageState extends State<MyHomePage> {
               handlerRadius: 8,
               ticksColor: Colors.grey,
               rotateLabels: false,
-              labels: [
-                "24 h",
-                "3 h",
-                "6 h",
-                "9 h",
-                "12 h",
-                "15 h",
-                "18 h",
-                "21 h"
-              ].asMap().entries.map((e) {
-                return ClockLabel.fromIndex(
-                    idx: e.key, length: 8, text: e.value);
+              labels: ["24 h", "3 h", "6 h", "9 h", "12 h", "15 h", "18 h", "21 h"]
+                  .asMap()
+                  .entries
+                  .map((e) {
+                return ClockLabel.fromIndex(idx: e.key, length: 8, text: e.value);
               }).toList(),
               labelOffset: 30,
               padding: 55,
@@ -278,18 +244,11 @@ class _MyHomePageState extends State<MyHomePage> {
               ticks: 12,
               ticksColor: Colors.grey,
               ticksOffset: -12,
-              labels: [
-                "24 h",
-                "3 h",
-                "6 h",
-                "9 h",
-                "12 h",
-                "15 h",
-                "18 h",
-                "21 h"
-              ].asMap().entries.map((e) {
-                return ClockLabel.fromIndex(
-                    idx: e.key, length: 8, text: e.value);
+              labels: ["24 h", "3 h", "6 h", "9 h", "12 h", "15 h", "18 h", "21 h"]
+                  .asMap()
+                  .entries
+                  .map((e) {
+                return ClockLabel.fromIndex(idx: e.key, length: 8, text: e.value);
               }).toList(),
               labelOffset: -30,
               padding: 55,
@@ -314,18 +273,11 @@ class _MyHomePageState extends State<MyHomePage> {
               ticks: 12,
               ticksColor: Colors.grey,
               ticksOffset: -12,
-              labels: [
-                "24 h",
-                "3 h",
-                "6 h",
-                "9 h",
-                "12 h",
-                "15 h",
-                "18 h",
-                "21 h"
-              ].asMap().entries.map((e) {
-                return ClockLabel.fromIndex(
-                    idx: e.key, length: 8, text: e.value);
+              labels: ["24 h", "3 h", "6 h", "9 h", "12 h", "15 h", "18 h", "21 h"]
+                  .asMap()
+                  .entries
+                  .map((e) {
+                return ClockLabel.fromIndex(idx: e.key, length: 8, text: e.value);
               }).toList(),
               labelOffset: -30,
               padding: 55,
@@ -344,8 +296,8 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         ElevatedButton(
           onPressed: () async {
-            TimeRange? result = await showTimeRangePicker(
-                context: context, barrierDismissible: false);
+            TimeRange? result =
+                await showTimeRangePicker(context: context, barrierDismissible: false);
 
             print("result " + result.toString());
           },
@@ -354,7 +306,7 @@ class _MyHomePageState extends State<MyHomePage> {
         Divider(),
         Text(
           'As a regular widget:',
-          style: Theme.of(context).textTheme.headline6,
+          style: Theme.of(context).textTheme.headlineMedium,
           textAlign: TextAlign.center,
         ),
         Container(
@@ -366,10 +318,8 @@ class _MyHomePageState extends State<MyHomePage> {
             paintingStyle: PaintingStyle.fill,
             backgroundColor: Colors.grey.withOpacity(0.2),
             labels: [
-              ClockLabel.fromTime(
-                  time: TimeOfDay(hour: 7, minute: 0), text: "Start Work"),
-              ClockLabel.fromTime(
-                  time: TimeOfDay(hour: 18, minute: 0), text: "Go Home")
+              ClockLabel.fromTime(time: TimeOfDay(hour: 7, minute: 0), text: "Start Work"),
+              ClockLabel.fromTime(time: TimeOfDay(hour: 18, minute: 0), text: "Go Home")
             ],
             start: TimeOfDay(hour: 10, minute: 0),
             end: TimeOfDay(hour: 13, minute: 0),
@@ -379,8 +329,7 @@ class _MyHomePageState extends State<MyHomePage> {
             labelOffset: 15,
             padding: 60,
             disabledTime: TimeRange(
-                startTime: TimeOfDay(hour: 18, minute: 0),
-                endTime: TimeOfDay(hour: 7, minute: 0)),
+                startTime: TimeOfDay(hour: 18, minute: 0), endTime: TimeOfDay(hour: 7, minute: 0)),
             disabledColor: Colors.red.withOpacity(0.5),
           ),
         ),
@@ -420,8 +369,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     TextButton(
                       child: Text('My custom ok'),
                       onPressed: () {
-                        Navigator.of(context).pop(TimeRange(
-                            startTime: _startTime, endTime: _endTime));
+                        Navigator.of(context)
+                            .pop(TimeRange(startTime: _startTime, endTime: _endTime));
                       },
                     ),
                   ],
@@ -454,9 +403,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               strokeWidth: 4,
                               ticks: 12,
                               activeTimeTextStyle: TextStyle(
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 22,
-                                  color: Colors.white),
+                                  fontWeight: FontWeight.normal, fontSize: 22, color: Colors.white),
                               timeTextStyle: TextStyle(
                                   fontWeight: FontWeight.normal,
                                   fontSize: 22,
