@@ -449,43 +449,55 @@ class TimeRangePickerState extends State<TimeRangePicker>
     var minDurationSigned = durationToAngle(widget.minDuration);
     var minDurationAngle =
         minDurationSigned < 0 ? 2 * pi + minDurationSigned : minDurationSigned;
-    //print("min duration angle " + (minDurationAngle * 180 / pi).toString());
     if (_activeTime == ActiveTime.Start) {
       var angleToEndSigned = signedAngle(_endAngle, dir);
       var angleToEnd =
           angleToEndSigned < 0 ? 2 * pi + angleToEndSigned : angleToEndSigned;
+      final beforeEnd = _endAngle - minDurationAngle;
 
-      //check if hitting disabled
       if (widget.disabledTime != null) {
-        var angleToDisabledStart = signedAngle(_disabledStartAngle!, dir);
-        var angleToDisabledEnd = signedAngle(_disabledEndAngle!, dir);
-
-        var disabledAngleSigned =
-            signedAngle(_disabledEndAngle!, _disabledStartAngle!);
-        var disabledDiff = disabledAngleSigned < 0
-            ? 2 * pi + disabledAngleSigned
-            : disabledAngleSigned;
-
-        //print("to disabled start " + (angleToDisabledStart * 180 / pi).toString());
-        // print("to disabled end " + (angleToDisabledEnd * 180 / pi).toString());
-
-        if (angleToDisabledStart - minDurationAngle < 0 &&
-            angleToDisabledStart > -disabledDiff / 2) {
-          dir = _disabledStartAngle! - minDurationAngle;
-          _updateTimeAndSnapAngle(ActiveTime.End, _disabledStartAngle!);
-        } else if (angleToDisabledEnd > 0 &&
-            angleToDisabledEnd < disabledDiff / 2) {
-          dir = _disabledEndAngle!;
+        // Keep start slider at disabled end if trying to move it through the disabled interval
+        // to between disabled start and just before end slider
+        final betweenBeforeEndAndDisabledEnd =
+            anglesInOrder(beforeEnd, dir, _disabledEndAngle!);
+        final startSliderIsNearerDisabledEnd =
+            (_startAngle - _disabledEndAngle!).abs() <
+                (beforeEnd - _startAngle).abs();
+        final endSliderAtDisabledStart = _endAngle == _disabledStartAngle!;
+        if (betweenBeforeEndAndDisabledEnd) {
+          if (startSliderIsNearerDisabledEnd) {
+            dir = _disabledEndAngle!;
+          } else if (endSliderAtDisabledStart) {
+            dir = _disabledStartAngle! - minDurationAngle;
+          }
         }
       }
 
       // if after end time -> push end time ahead
-      if (angleToEnd > 0 && angleToEnd < minDurationAngle) {
-        var angle = dir + minDurationAngle;
-        _updateTimeAndSnapAngle(ActiveTime.End, angle);
+      final dirIsAfterStart = angleFromFirstToSecond(_startAngle, dir) < pi;
+      final dirIsAfterBeforeEnd = angleFromFirstToSecond(beforeEnd, dir) < pi;
+      final beforeEndIsAfterStart =
+          angleFromFirstToSecond(_startAngle, _endAngle) < pi;
+      if (_startAngle != _disabledEndAngle &&
+          _endAngle != _disabledStartAngle &&
+          dirIsAfterStart &&
+          dirIsAfterBeforeEnd &&
+          beforeEndIsAfterStart) {
+        var newAngle = dir + minDurationAngle;
+        // check if newAngle is in disabled interval, and if so make sure both sliders
+        // do not go inside
+        if (widget.disabledTime != null) {
+          final newAngleInDisabledInterval =
+              anglesInOrder(_disabledStartAngle!, newAngle, _disabledEndAngle!);
+          if (newAngleInDisabledInterval) {
+            newAngle = _disabledStartAngle!;
+            dir = _disabledStartAngle! - minDurationAngle;
+          }
+        }
+        _updateTimeAndSnapAngle(ActiveTime.End, newAngle);
       }
 
-      //check end time
+      // check end time
       if (widget.maxDuration != null) {
         var startSigned = signedAngle(_endAngle, dir);
         var startDiff = startSigned < 0 ? 2 * pi + startSigned : startSigned;
@@ -501,37 +513,49 @@ class TimeRangePickerState extends State<TimeRangePicker>
       var angleToStart = angleToStartSigned < 0
           ? 2 * pi + angleToStartSigned
           : angleToStartSigned;
+      final afterStart = _startAngle + minDurationAngle;
 
-      //check if hitting disabled
       if (widget.disabledTime != null) {
-        var angleToDisabledStart = signedAngle(_disabledStartAngle!, dir);
-        var angleToDisabledEnd = signedAngle(_disabledEndAngle!, dir);
-
-        var disabledAngleSigned =
-            signedAngle(_disabledEndAngle!, _disabledStartAngle!);
-        var disabledDiff = disabledAngleSigned < 0
-            ? 2 * pi + disabledAngleSigned
-            : disabledAngleSigned;
-
-        //print("to disabled start " + (angleToDisabledStart * 180 / pi).toString());
-        //print("to disabled end " + (angleToDisabledEnd * 180 / pi).toString());
-
-        //print("disabled diff " + (disabledDiff * 180 / pi).toString());
-
-        if (angleToDisabledStart < 0 &&
-            angleToDisabledStart > -disabledDiff / 2) {
-          dir = _disabledStartAngle!;
-        } else if (angleToDisabledEnd + minDurationAngle > 0 &&
-            angleToDisabledEnd < disabledDiff / 2) {
-          dir = _disabledEndAngle! + minDurationAngle;
-          _updateTimeAndSnapAngle(ActiveTime.Start, _disabledEndAngle!);
+        // Keep end slider at disabled start if trying to move it through the disabled interval
+        // to between disabled start and just after start slider
+        final betweenDisabledStartAndAfterStart =
+            anglesInOrder(_disabledStartAngle!, dir, afterStart);
+        final endSliderIsNearerDisabledStart =
+            (_disabledStartAngle! - _endAngle).abs() <
+                (_endAngle - afterStart).abs();
+        final startSliderAtDisabledEnd = _startAngle == _disabledEndAngle!;
+        if (betweenDisabledStartAndAfterStart) {
+          if (endSliderIsNearerDisabledStart) {
+            dir = _disabledStartAngle!;
+          } else if (startSliderAtDisabledEnd) {
+            dir = _disabledEndAngle! + minDurationAngle;
+          }
         }
       }
 
       // if before start time -> push start time ahead
-      if (angleToStart > 0 && angleToStart < minDurationAngle) {
-        var angle = dir - minDurationAngle;
-        _updateTimeAndSnapAngle(ActiveTime.Start, angle);
+      final dirIsBeforeEnd = angleFromFirstToSecond(dir, _endAngle) < pi;
+      final dirIsBeforeAfterStart =
+          angleFromFirstToSecond(dir, afterStart) < pi;
+      final afterStartIsBeforeEnd =
+          angleFromFirstToSecond(_startAngle, _endAngle) < pi;
+      if (_endAngle != _disabledStartAngle &&
+          _startAngle != _disabledEndAngle &&
+          dirIsBeforeEnd &&
+          dirIsBeforeAfterStart &&
+          afterStartIsBeforeEnd) {
+        var newAngle = dir - minDurationAngle;
+        // check if newAngle is in disabled interval, and if so make sure both sliders
+        // do not go inside
+        if (widget.disabledTime != null) {
+          final newAngleInDisabledInterval =
+              anglesInOrder(_disabledStartAngle!, newAngle, _disabledEndAngle!);
+          if (newAngleInDisabledInterval) {
+            newAngle = _disabledEndAngle!;
+            dir = _disabledEndAngle! + minDurationAngle;
+          }
+        }
+        _updateTimeAndSnapAngle(ActiveTime.Start, newAngle);
       }
 
       //check end time
@@ -619,7 +643,7 @@ class TimeRangePickerState extends State<TimeRangePicker>
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 if (!widget.hideTimes) buildHeader(false),
-                Stack(
+                  Stack(
                     //fit: StackFit.loose,
                     alignment: Alignment.center,
                     children: [
@@ -627,7 +651,7 @@ class TimeRangePickerState extends State<TimeRangePicker>
                         widget.backgroundWidget!,
                       buildTimeRange(
                           localizations: localizations, themeData: themeData)
-                    ]),
+                  ]),
                 if (!widget.hideButtons)
                   buildButtonBar(localizations: localizations)
               ],
