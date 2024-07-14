@@ -62,6 +62,9 @@ showTimeRangePicker({
   /// the color of the circle outline
   Color? backgroundColor,
 
+  /// the background color of the header
+  Color? headerBackgroundColor,
+
   /// a widget displayed in the background, use e.g. an image
   Widget? backgroundWidget,
 
@@ -145,6 +148,7 @@ showTimeRangePicker({
         handlerColor: handlerColor,
         selectedColor: selectedColor,
         backgroundColor: backgroundColor,
+        headerBackgroundColor: headerBackgroundColor,
         disabledColor: disabledColor,
         backgroundWidget: backgroundWidget,
         ticks: ticks,
@@ -200,6 +204,7 @@ class TimeRangePicker extends StatefulWidget {
   final Color? handlerColor;
   final Color? selectedColor;
   final Color? backgroundColor;
+  final Color? headerBackgroundColor;
   final Color? disabledColor;
   final PaintingStyle paintingStyle;
 
@@ -248,6 +253,7 @@ class TimeRangePicker extends StatefulWidget {
     this.handlerColor,
     this.selectedColor,
     this.backgroundColor,
+    this.headerBackgroundColor,
     this.disabledColor,
     this.paintingStyle = PaintingStyle.stroke,
     this.backgroundWidget,
@@ -643,7 +649,7 @@ class TimeRangePickerState extends State<TimeRangePicker>
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 if (!widget.hideTimes) buildHeader(false),
-                  Stack(
+                Stack(
                     //fit: StackFit.loose,
                     alignment: Alignment.center,
                     children: [
@@ -651,7 +657,7 @@ class TimeRangePickerState extends State<TimeRangePicker>
                         widget.backgroundWidget!,
                       buildTimeRange(
                           localizations: localizations, themeData: themeData)
-                  ]),
+                    ]),
                 if (!widget.hideButtons)
                   buildButtonBar(localizations: localizations)
               ],
@@ -761,10 +767,12 @@ class TimeRangePickerState extends State<TimeRangePicker>
     Color backgroundColor;
     switch (themeData.brightness) {
       case Brightness.light:
-        backgroundColor = themeData.primaryColor;
+        backgroundColor =
+            widget.headerBackgroundColor ?? themeData.primaryColor;
         break;
       case Brightness.dark:
-        backgroundColor = themeData.colorScheme.surface;
+        backgroundColor =
+            widget.headerBackgroundColor ?? themeData.colorScheme.surface;
         break;
     }
 
