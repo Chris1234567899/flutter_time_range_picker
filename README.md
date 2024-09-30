@@ -1,3 +1,10 @@
+This package is forked from the original at https://github.com/Chris1234567899/flutter_time_range_picker
+
+It improves it by:
+- blocking the sliders from entering in the disabled interval
+- fixes a bug where moving the slider quickly can make it skip over the other slider, causing the selected range to go through the disabled interval
+- added option for the header background color
+
 # Time Range Picker
 
 A time range picker for flutter.

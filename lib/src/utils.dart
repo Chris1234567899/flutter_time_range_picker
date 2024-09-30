@@ -1,6 +1,18 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 
+double angleFromFirstToSecond(double firstAngle, double secondAngle) {
+  return secondAngle - firstAngle > 0
+      ? secondAngle - firstAngle
+      : 2 * pi + secondAngle - firstAngle;
+}
+
+bool anglesInOrder(double firstAngle, double secondAngle, double thirdAngle) {
+  final firstToSecond = angleFromFirstToSecond(firstAngle, secondAngle);
+  final firstToThird = angleFromFirstToSecond(firstAngle, thirdAngle);
+  return firstToSecond < firstToThird;
+}
+
 //normalize angle
 double normalizeAngle(double radians) {
   var normalized = atan2(sin(radians), cos(radians));
