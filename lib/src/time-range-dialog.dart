@@ -669,6 +669,7 @@ class TimeRangePickerState extends State<TimeRangePicker>
 
   Widget buildButtonBar({required MaterialLocalizations localizations}) =>
       OverflowBar(
+        alignment: MainAxisAlignment.end,
         children: <Widget>[
           TextButton(
             child: Text(localizations.cancelButtonLabel),
