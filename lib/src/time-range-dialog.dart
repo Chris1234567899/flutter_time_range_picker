@@ -65,6 +65,9 @@ showTimeRangePicker({
   /// a widget displayed in the background, use e.g. an image
   Widget? backgroundWidget,
 
+  /// the color of header background
+  Color? headerBgColor,
+
   /// number of ticks displayed
   int ticks = 0,
 
@@ -147,6 +150,7 @@ showTimeRangePicker({
         backgroundColor: backgroundColor,
         disabledColor: disabledColor,
         backgroundWidget: backgroundWidget,
+        headerBgColor: headerBgColor,
         ticks: ticks,
         ticksLength: ticksLength,
         ticksWidth: ticksWidth,
@@ -201,6 +205,7 @@ class TimeRangePicker extends StatefulWidget {
   final Color? selectedColor;
   final Color? backgroundColor;
   final Color? disabledColor;
+  final Color? headerBgColor;
   final PaintingStyle paintingStyle;
 
   final Widget? backgroundWidget;
@@ -249,6 +254,7 @@ class TimeRangePicker extends StatefulWidget {
     this.selectedColor,
     this.backgroundColor,
     this.disabledColor,
+    this.headerBgColor,
     this.paintingStyle = PaintingStyle.stroke,
     this.backgroundWidget,
     this.ticks = 0,
@@ -662,7 +668,8 @@ class TimeRangePickerState extends State<TimeRangePicker>
   }
 
   Widget buildButtonBar({required MaterialLocalizations localizations}) =>
-      ButtonBar(
+      OverflowBar(
+        alignment: MainAxisAlignment.end,
         children: <Widget>[
           TextButton(
             child: Text(localizations.cancelButtonLabel),
@@ -735,13 +742,17 @@ class TimeRangePickerState extends State<TimeRangePicker>
     final ThemeData themeData = Theme.of(context);
 
     Color backgroundColor;
-    switch (themeData.brightness) {
-      case Brightness.light:
-        backgroundColor = themeData.primaryColor;
-        break;
-      case Brightness.dark:
-        backgroundColor = themeData.colorScheme.surface;
-        break;
+    if (widget.headerBgColor != null) {
+      backgroundColor = widget.headerBgColor!;
+    } else {
+      switch (themeData.brightness) {
+        case Brightness.light:
+          backgroundColor = themeData.primaryColor;
+          break;
+        case Brightness.dark:
+          backgroundColor = themeData.colorScheme.surface;
+          break;
+      }
     }
 
     Color activeColor;
