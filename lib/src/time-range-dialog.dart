@@ -8,6 +8,9 @@ import 'package:time_range_picker/src/utils.dart';
 showTimeRangePicker({
   required BuildContext context,
 
+  /// insets padding for the dialog
+  EdgeInsets? insetPadding,
+
   /// preselected start time
   TimeOfDay? start,
 
@@ -128,6 +131,7 @@ showTimeRangePicker({
   final Widget dialog = Dialog(
       elevation: 12,
       clipBehavior: Clip.antiAlias,
+      insetPadding: insetPadding,
       child: TimeRangePicker(
         start: start,
         end: end,
