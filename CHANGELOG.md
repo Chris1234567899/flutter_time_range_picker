@@ -43,3 +43,6 @@
 
 ## [2.3.0] - TODO: Add release date.
 * Fixed minor compability issues with Flutter 3
+
+## [2.3.1] - TODO: Add release date.
+* Merged inset padding to adjust dialog size
