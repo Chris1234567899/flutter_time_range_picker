@@ -7,7 +7,7 @@ issue_tracker: https://github.com/Chris1234567899/flutter_time_range_picker/issu
 
 
 environment:
-  sdk: ">=2.12.0 <4.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
